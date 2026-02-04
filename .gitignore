@@ -1,0 +1,9 @@
+# Ignore dataset folders
+train/
+test/
+valid/
+
+# Ignore virtual environment
+.venv/
+
+venv/

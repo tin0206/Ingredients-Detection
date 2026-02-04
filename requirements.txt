@@ -1,0 +1,4 @@
+ultralytics>=8.2.0
+# CPU-only wheels for Windows; comment out to use CUDA if available
+torch>=2.1.0
+torchvision>=0.16.0
