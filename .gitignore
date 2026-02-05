@@ -1,6 +1,5 @@
-# Ignore dataset folders
-train/
 test/
+train/
 valid/
 
 # Ignore virtual environment

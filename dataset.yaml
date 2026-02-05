@@ -1,5 +1,128 @@
-path: .
-train: D:/Code/Ingredients-Detection/train/images
-val: D:/Code/Ingredients-Detection/valid/images
-test: D:/Code/Ingredients-Detection/test/images
-names: [ingredient_0, ingredient_1, ingredient_2, ingredient_3, ingredient_4, ingredient_5, ingredient_6, ingredient_7, ingredient_8, ingredient_9, ingredient_10, ingredient_11, ingredient_12, ingredient_13, ingredient_14, ingredient_15, ingredient_16, ingredient_17, ingredient_18, ingredient_19, ingredient_20, ingredient_21, ingredient_22, ingredient_23, ingredient_24, ingredient_25, ingredient_26, ingredient_27, ingredient_28, ingredient_29, ingredient_30, ingredient_31, ingredient_32, ingredient_33, ingredient_34, ingredient_35, ingredient_36, ingredient_37, ingredient_38, ingredient_39, ingredient_40, ingredient_41, ingredient_42, ingredient_43, ingredient_44, ingredient_45, ingredient_46, ingredient_47, ingredient_48, ingredient_49, ingredient_50, ingredient_51, ingredient_52, ingredient_53, ingredient_54, ingredient_55, ingredient_56, ingredient_57, ingredient_58, ingredient_59, ingredient_60, ingredient_61, ingredient_62, ingredient_63, ingredient_64, ingredient_65, ingredient_66, ingredient_67, ingredient_68, ingredient_69, ingredient_70, ingredient_71, ingredient_72, ingredient_73, ingredient_74, ingredient_75, ingredient_76, ingredient_77, ingredient_78, ingredient_79, ingredient_80, ingredient_81, ingredient_82, ingredient_83, ingredient_84, ingredient_85, ingredient_86, ingredient_87, ingredient_88, ingredient_89, ingredient_90, ingredient_91, ingredient_92, ingredient_93, ingredient_94, ingredient_95, ingredient_96, ingredient_97, ingredient_98, ingredient_99, ingredient_100, ingredient_101, ingredient_102, ingredient_103, ingredient_104, ingredient_105, ingredient_106, ingredient_107, ingredient_108, ingredient_109, ingredient_110, ingredient_111, ingredient_112, ingredient_113, ingredient_114, ingredient_115, ingredient_116, ingredient_117, ingredient_118, ingredient_119]
+path: D:/Code/Ingredients-Detection
+train: train/images
+val: valid/images
+test: test/images
+
+nc: 120
+
+names:
+  0: class_0
+  1: class_1
+  2: class_2
+  3: class_3
+  4: class_4
+  5: class_5
+  6: class_6
+  7: class_7
+  8: class_8
+  9: class_9
+  10: class_10
+  11: class_11
+  12: class_12
+  13: class_13
+  14: class_14
+  15: class_15
+  16: class_16
+  17: class_17
+  18: class_18
+  19: class_19
+  20: class_20
+  21: class_21
+  22: class_22
+  23: class_23
+  24: class_24
+  25: class_25
+  26: class_26
+  27: class_27
+  28: class_28
+  29: class_29
+  30: class_30
+  31: class_31
+  32: class_32
+  33: class_33
+  34: class_34
+  35: class_35
+  36: class_36
+  37: class_37
+  38: class_38
+  39: class_39
+  40: class_40
+  41: class_41
+  42: class_42
+  43: class_43
+  44: class_44
+  45: class_45
+  46: class_46
+  47: class_47
+  48: class_48
+  49: class_49
+  50: class_50
+  51: class_51
+  52: class_52
+  53: class_53
+  54: class_54
+  55: class_55
+  56: class_56
+  57: class_57
+  58: class_58
+  59: class_59
+  60: class_60
+  61: class_61
+  62: class_62
+  63: class_63
+  64: class_64
+  65: class_65
+  66: class_66
+  67: class_67
+  68: class_68
+  69: class_69
+  70: class_70
+  71: class_71
+  72: class_72
+  73: class_73
+  74: class_74
+  75: class_75
+  76: class_76
+  77: class_77
+  78: class_78
+  79: class_79
+  80: class_80
+  81: class_81
+  82: class_82
+  83: class_83
+  84: class_84
+  85: class_85
+  86: class_86
+  87: class_87
+  88: class_88
+  89: class_89
+  90: class_90
+  91: class_91
+  92: class_92
+  93: class_93
+  94: class_94
+  95: class_95
+  96: class_96
+  97: class_97
+  98: class_98
+  99: class_99
+  100: class_100
+  101: class_101
+  102: class_102
+  103: class_103
+  104: class_104
+  105: class_105
+  106: class_106
+  107: class_107
+  108: class_108
+  109: class_109
+  110: class_110
+  111: class_111
+  112: class_112
+  113: class_113
+  114: class_114
+  115: class_115
+  116: class_116
+  117: class_117
+  118: class_118
+  119: class_119
