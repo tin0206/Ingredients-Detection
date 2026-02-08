@@ -1,13 +1,324 @@
-train: ../train/images
-val: ../valid/images
-test: ../test/images
+path: dataset
+train: train/images
+val: valid/images
+test: test/images
 
-nc: 120
-names: ['Akabare Khursani', 'Apple', 'Artichoke', 'Ash Gourd -Kubhindo-', 'Asparagus -Kurilo-', 'Avocado', 'Bacon', 'Bamboo Shoots -Tama-', 'Banana', 'Beans', 'Beaten Rice -Chiura-', 'Beef', 'Beetroot', 'Bethu ko Saag', 'Bitter Gourd', 'Black Lentils', 'Black beans', 'Bottle Gourd -Lauka-', 'Bread', 'Brinjal', 'Broad Beans -Bakullo-', 'Broccoli', 'Buff Meat', 'Butter', 'Cabbage', 'Capsicum', 'Carrot', 'Cassava -Ghar Tarul-', 'Cauliflower', 'Chayote-iskus-', 'Cheese', 'Chicken Gizzards', 'Chicken', 'Chickpeas', 'Chili Pepper -Khursani-', 'Chili Powder', 'Chowmein Noodles', 'Cinnamon', 'Coriander -Dhaniya-', 'Corn', 'Cornflakec', 'Crab Meat', 'Cucumber', 'Egg', 'Farsi ko Munta', 'Fiddlehead Ferns -Niguro-', 'Fish', 'Garden Peas', 'Garden cress-Chamsur ko saag-', 'Garlic', 'Ginger', 'Green Brinjal', 'Green Lentils', 'Green Mint -Pudina-', 'Green Peas', 'Green Soyabean -Hariyo Bhatmas-', 'Gundruk', 'Ham', 'Ice', 'Jack Fruit', 'Ketchup', 'Lapsi -Nepali Hog Plum-', 'Lemon -Nimbu-', 'Lime -Kagati-', 'Long Beans -Bodi-', 'Masyaura', 'Milk', 'Minced Meat', 'Moringa Leaves -Sajyun ko Munta-', 'Mushroom', 'Mutton', 'Nutrela -Soya Chunks-', 'Okra -Bhindi-', 'Olive Oil', 'Onion Leaves', 'Onion', 'Orange', 'Palak -Indian Spinach-', 'Palungo -Nepali Spinach-', 'Paneer', 'Papaya', 'Pea', 'Pear', 'Pointed Gourd -Chuche Karela-', 'Pork', 'Potato', 'Pumpkin -Farsi-', 'Radish', 'Rahar ko Daal', 'Rayo ko Saag', 'Red Beans', 'Red Lentils', 'Rice -Chamal-', 'Sajjyun -Moringa Drumsticks-', 'Salt', 'Sausage', 'Snake Gourd -Chichindo-', 'Soy Sauce', 'Soyabean -Bhatmas-', 'Sponge Gourd -Ghiraula-', 'Stinging Nettle -Sisnu-', 'Strawberry', 'Sugar', 'Sweet Potato -Suthuni-', 'Taro Leaves -Karkalo-', 'Taro Root-Pidalu-', 'Thukpa Noodles', 'Tofu', 'Tomato', 'Tori ko Saag', 'Tree Tomato -Rukh Tamatar-', 'Turnip', 'Wallnut', 'Water Melon', 'Wheat', 'Yellow Lentils', 'kimchi', 'mayonnaise', 'noodle', 'seaweed']
+nc: 316
 
-roboflow:
-  workspace: food-recipe-ingredient-images-0gnku
-  project: food-ingredients-dataset
-  version: 4
-  license: CC BY 4.0
-  url: https://universe.roboflow.com/food-recipe-ingredient-images-0gnku/food-ingredients-dataset/dataset/4
+names:
+  - adzuki beans
+  - all-purpose flour
+  - allspice
+  - almond flour
+  - amaranth
+  - apricot
+  - arugula
+  - asparagus
+  - avocado
+  - avocado oil
+  - bamboo shoots
+  - banana
+  - barley
+  - beef
+  - beet
+  - beluga lentils
+  - bergamot
+  - bison
+  - black beans
+  - black cherry
+  - black lentils
+  - black olives
+  - black salt
+  - black sapote
+  - black-eyed peas
+  - blackberry
+  - blueberry
+  - bok choy
+  - boysenberry
+  - bread flour
+  - breadfruit
+  - broccoli
+  - broccoli stem
+  - brown lentils
+  - brown sugar
+  - brussels sprouts
+  - buckwheat
+  - buffalo
+  - bulgur
+  - cabbage
+  - cake flour
+  - cane sugar
+  - canned anchovies
+  - canned apples
+  - canned apricots
+  - canned artichoke hearts
+  - canned baked beans
+  - canned beets
+  - canned black beans
+  - canned cannellini beans
+  - canned carrots
+  - canned cherries
+  - canned chickpeas
+  - canned clams
+  - canned corn
+  - canned crab
+  - canned fruit cocktail
+  - canned green beans
+  - canned kidney beans
+  - canned lima beans
+  - canned lychee
+  - canned mackerel
+  - canned mandarin oranges
+  - canned mango
+  - canned mushrooms
+  - canned navy beans
+  - canned olives
+  - canned oysters
+  - canned peaches
+  - canned pears
+  - canned peas
+  - canned pineapples
+  - canned pinto beans
+  - canned pumpkin
+  - canned refried beans
+  - canned salmon
+  - canned sardines
+  - canned shrimp
+  - canned tomatoes
+  - canned trout
+  - canned tuna
+  - cannellini beans
+  - canola oil
+  - cardamom
+  - caribou
+  - carrot
+  - castelvetrano olives
+  - cauliflower
+  - celeriac
+  - celery
+  - celtic salt
+  - cerignola olives
+  - chard stalk
+  - cherimoya
+  - cherry
+  - chia
+  - chicken
+  - chickpeas
+  - chive
+  - cinnamon
+  - clove
+  - coconut
+  - coconut flour
+  - coconut oil
+  - coconut sugar
+  - cod
+  - collard greens
+  - coriander
+  - corn grits
+  - cornmeal
+  - couscous
+  - crab
+  - cracked wheat
+  - cranberry
+  - cumin
+  - daikon
+  - date sugar
+  - deer
+  - demerara sugar
+  - dragon fruit
+  - duck
+  - durian
+  - einkorn
+  - elderberry
+  - elephant garlic
+  - elk
+  - emmer
+  - farfalle
+  - farro
+  - fava beans
+  - fennel
+  - fettuccine
+  - field peas
+  - flaky salt
+  - flaxseed oil
+  - freekeh
+  - french lentils
+  - fusilli
+  - gaeta olives
+  - garlic
+  - ginger
+  - gluten-free flour
+  - goat
+  - goji berry
+  - golden lentils
+  - goose
+  - grapefruit
+  - grapeseed oil
+  - green lentils
+  - green olives
+  - green onion
+  - green peas
+  - grouse
+  - guava
+  - guinea fowl
+  - haddock
+  - huckleberry
+  - iodized salt
+  - jackfruit
+  - jarred artichokes
+  - jarred capers
+  - jarred horseradish
+  - jarred olives
+  - jarred pasta sauce
+  - jarred peppers
+  - jarred pesto
+  - jarred pickles
+  - jarred salsa
+  - jarred sun-dried tomatoes
+  - kalamata olives
+  - kale
+  - kamut
+  - kidney beans
+  - kiwi
+  - kohlrabi
+  - kosher salt
+  - kumquat
+  - lamb
+  - lasagna
+  - leek
+  - lemon
+  - lemongrass
+  - lettuce
+  - ligurian olives
+  - lima beans
+  - lime
+  - linguine
+  - lobster
+  - lychee
+  - macaroni
+  - mackerel
+  - mandarin
+  - mango
+  - manzanilla olives
+  - millet
+  - mulberry
+  - mung beans
+  - muscovado sugar
+  - mustard greens
+  - mutton
+  - navy beans
+  - nectarine
+  - nicoise olives
+  - nutmeg
+  - oat flour
+  - oats
+  - octopus
+  - olive oil
+  - onion
+  - orange
+  - orange lentils
+  - ostrich
+  - papaya
+  - paprika
+  - parsnip
+  - partridge
+  - passion fruit
+  - pasta
+  - pawpaw
+  - peach
+  - peanut oil
+  - pearl onion
+  - penne
+  - pheasant
+  - picholine olives
+  - pickling salt
+  - pigeon peas
+  - pineapple
+  - pink salt
+  - pinto beans
+  - plum
+  - pluot
+  - polenta
+  - pomelo
+  - pork
+  - potato
+  - powdered sugar
+  - quail
+  - quinoa
+  - rabbit
+  - radicchio
+  - radish
+  - ramps
+  - raspberry
+  - raw sugar
+  - red lentils
+  - rhubarb
+  - rice
+  - rigatoni
+  - romaine
+  - rotini
+  - rutabaga
+  - rye flour
+  - salmon
+  - santol
+  - sapote
+  - savoy cabbage
+  - scallion
+  - scallop
+  - sea salt
+  - self-rising flour
+  - semolina
+  - sesame oil
+  - shallot
+  - shrimp
+  - smoked salt
+  - snap peas
+  - snow peas
+  - sorghum
+  - sour cherry
+  - soursop
+  - soybeans
+  - spaghetti
+  - spanish pardina lentils
+  - spelt
+  - spinach
+  - split peas
+  - spring onion
+  - sprouted adzuki beans
+  - sprouted black beans
+  - sprouted chickpeas
+  - sprouted green peas
+  - sprouted kidney beans
+  - sprouted lentils
+  - sprouted mung beans
+  - sprouted navy beans
+  - sprouted pinto beans
+  - sprouted soybeans
+  - squab
+  - squirrel
+  - strawberry
+  - sunflower oil
+  - sweet potato
+  - swiss chard
+  - table salt
+  - tangerine
+  - teff
+  - tuna
+  - turbinado sugar
+  - turkey
+  - turmeric
+  - turnip
+  - vegetable oil
+  - venison
+  - watercress
+  - wheat bran
+  - white flour
+  - white peach
+  - white peas
+  - white rice
+  - white sugar
+  - whole wheat flour
+  - wild boar
+  - yellow lentils
+  - yellow peas
+  - yuzu

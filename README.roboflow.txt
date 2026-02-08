@@ -2,7 +2,7 @@
 FOOD-INGREDIENTS dataset - v4 2023-10-06 11:10pm
 ==============================
 
-This dataset was exported via roboflow.com on October 6, 2023 at 6:34 PM GMT
+This dataset was exported via roboflow.com on January 17, 2026 at 7:39 AM GMT
 
 Roboflow is an end-to-end computer vision platform that helps you
 * collaborate with your team on computer vision projects
@@ -18,7 +18,7 @@ visit https://github.com/roboflow/notebooks
 To find over 100k other datasets and pre-trained models, visit https://universe.roboflow.com
 
 The dataset includes 9780 images.
-FOOD-INGREDIENTS are annotated in YOLOv8 format.
+FOOD-INGREDIENTS are annotated in YOLO26 format.
 
 The following pre-processing was applied to each image:
 * Auto-orientation of pixel data (with EXIF-orientation stripping)

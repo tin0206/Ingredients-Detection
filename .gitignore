@@ -1,6 +1,5 @@
-test/
-train/
-valid/
+dataset/
+external_dataset/
 
 # Ignore virtual environment
 .venv/
