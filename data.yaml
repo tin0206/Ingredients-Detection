@@ -1,10 +1,3 @@
-path: dataset
-train: train/images
-val: valid/images
-test: test/images
-
-nc: 316
-
 names:
   - adzuki beans
   - all-purpose flour
@@ -157,7 +150,6 @@ names:
   - green lentils
   - green olives
   - green onion
-  - green peas
   - grouse
   - guava
   - guinea fowl
@@ -322,3 +314,50 @@ names:
   - yellow lentils
   - yellow peas
   - yuzu
+  - bacon_slices
+  - baguette
+  - bell_pepper
+  - bread
+  - butter
+  - cheese
+  - chicken_breast
+  - chicken_thigh
+  - chili_pepper
+  - chili_sauce
+  - coconut_water
+  - coffee
+  - corn
+  - dumpling_wrapper
+  - egg
+  - fish_sauce
+  - glass_noodles
+  - ham
+  - hoisin_sauce
+  - honey
+  - instant_noodles
+  - ketchup
+  - mayonnaise
+  - milk
+  - minced_meat
+  - mushroom
+  - oyster_sauce
+  - pork_belly
+  - rice_noodles
+  - sausage
+  - soy_sauce
+  - yogurt
+  - apple
+  - beetroot
+  - cucumber
+  - eggplant
+  - grapes
+  - pear
+  - peas
+  - pomegranate
+  - tomato
+  - watermelon
+nc: 368
+path: dataset
+test: test/images
+train: train/images
+val: valid/images

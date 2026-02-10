@@ -1,145 +1,121 @@
 import random
-import os
-from pathlib import Path
-import numpy as np
 import cv2
+from pathlib import Path
+import yaml
 from datasets import load_dataset
-from rembg import remove
-from PIL import Image
+import numpy as np
 
 # ================= CONFIG =================
-OUT_ROOT = Path("dataset")
-BACKGROUNDS_DIR = Path("backgrounds")
+DATA_YAML = "data.yaml"
+EXTERNAL_ROOT = Path("external_dataset")
+OUT_ROOT = Path("dataset_v2")
+
+HF_DATASETS = [
+    "SunnyAgarwal4274/Food_and_Vegetables",
+    "Scuccorese/food-ingredients-dataset"
+]
+
 IMG_SIZE = 640
-
-NUM_IMAGES = {
-    "train": 8000,
-    "valid": 1000,
-    "test": 1000
+SPLITS = {
+    "train": 0.8,
+    "valid": 0.1,
+    "test": 0.1
 }
-
-MIN_ING = 3
-MAX_ING = 7
 # =========================================
 
 
+def load_class_map():
+    with open(DATA_YAML, "r", encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+    return {name.lower(): i for i, name in enumerate(data["names"])}
+
+
 def ensure_dirs():
-    # for split in ["train", "valid", "test"]:
-    for split in ["test"]:
+    for split in SPLITS:
         (OUT_ROOT / split / "images").mkdir(parents=True, exist_ok=True)
         (OUT_ROOT / split / "labels").mkdir(parents=True, exist_ok=True)
 
 
-def pil_to_cv(img):
-    return cv2.cvtColor(np.array(img), cv2.COLOR_RGBA2BGRA)
+def choose_split():
+    r = random.random()
+    acc = 0
+    for split, p in SPLITS.items():
+        acc += p
+        if r <= acc:
+            return split
+    return "train"
 
 
-def normalize_bbox(x, y, w, h, W, H):
-    return (
-        (x + w / 2) / W,
-        (y + h / 2) / H,
-        w / W,
-        h / H
-    )
-    
-def get_start_index(split):
-    img_dir = OUT_ROOT / split / "images"
-    if not img_dir.exists():
-        return 0
+def save_yolo(img, cls_id, img_id):
+    split = choose_split()
 
-    existing = list(img_dir.glob("*.jpg"))
-    if not existing:
-        return 0
+    img = cv2.resize(img, (IMG_SIZE, IMG_SIZE))
 
-    ids = [int(p.stem) for p in existing if p.stem.isdigit()]
-    return max(ids) + 1
+    img_name = f"{img_id:06d}.jpg"
+    label_name = f"{img_id:06d}.txt"
+
+    cv2.imwrite(str(OUT_ROOT / split / "images" / img_name), img)
+
+    with open(OUT_ROOT / split / "labels" / label_name, "w") as f:
+        f.write(f"{cls_id} 0.5 0.5 1.0 1.0")
 
 
 def main():
+    class_map = load_class_map()
     ensure_dirs()
 
-    print("📥 Loading dataset...")
-    ds = load_dataset("Scuccorese/food-ingredients-dataset", split="train")
+    img_id = 0
 
-    # build class map
-    ingredients = sorted(set(ds["ingredient"]))
-    class_map = {name: i for i, name in enumerate(ingredients)}
+    # ================= 1️⃣ EXTERNAL DATASET =================
+    for cls_dir in EXTERNAL_ROOT.iterdir():
+        if not cls_dir.is_dir():
+            continue
 
-    with open("classes.txt", "w", encoding="utf-8") as f:
-        for name in ingredients:
-            f.write(name + "\n")
+        cls_name = cls_dir.name.lower()
+        if cls_name not in class_map:
+            continue
 
-    print(f"✅ {len(class_map)} classes")
+        cls_id = class_map[cls_name]
+        images = list(cls_dir.glob("*.jpg")) + list(cls_dir.glob("*.png"))
 
-    bg_files = list(BACKGROUNDS_DIR.glob("*.jpg"))
+        print(f"📦 External | {cls_name}: {len(images)} images")
 
-    for split, total_imgs in NUM_IMAGES.items():
-        print(f"\n🚀 Generating {split} set...")
+        for img_path in images:
+            img = cv2.imread(str(img_path))
+            if img is None:
+                continue
 
-        start_idx = get_start_index(split)
-        for idx in range(start_idx, total_imgs):
-            bg_path = random.choice(bg_files)
-            bg = cv2.imread(str(bg_path))
-            bg = cv2.resize(bg, (IMG_SIZE, IMG_SIZE))
+            save_yolo(img, cls_id, img_id)
+            img_id += 1
 
-            labels = []
+    # ================= 2️⃣ + 3️⃣ HUGGINGFACE =================
+    for hf_name in HF_DATASETS:
+        print(f"\n📥 Loading HuggingFace: {hf_name}")
+        ds = load_dataset(hf_name, split="train")
 
-            k = random.randint(MIN_ING, MAX_ING)
-            samples = random.sample(range(len(ds)), k)
+        label_names = ds.features["label"].names
 
-            for s in samples:
-                sample = ds[s]
-                cls_name = sample["ingredient"]
-                cls_id = class_map[cls_name]
+        used = 0
 
-                # remove background
-                fg = remove(sample["image"])
-                fg = pil_to_cv(fg)
+        for sample in ds:
+            cls_name = label_names[sample["label"]].lower()
 
-                h, w = fg.shape[:2]
+            if cls_name not in class_map:
+                continue
 
-                max_scale = min(
-                    (IMG_SIZE * 0.6) / w,
-                    (IMG_SIZE * 0.6) / h
-                )
+            cls_id = class_map[cls_name]
 
-                scale = random.uniform(0.2, min(0.4, max_scale))
+            img = np.array(sample["image"])
+            img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
 
-                nw, nh = int(w * scale), int(h * scale)
+            save_yolo(img, cls_id, img_id)
+            img_id += 1
+            used += 1
 
-                if nw >= IMG_SIZE or nh >= IMG_SIZE:
-                    continue
+        print(f"✅ Used {used} images from {hf_name}")
 
-                fg = cv2.resize(fg, (nw, nh))
-                
-                if IMG_SIZE - nw <= 0 or IMG_SIZE - nh <= 0:
-                    continue
-
-                x = random.randint(0, IMG_SIZE - nw)
-                y = random.randint(0, IMG_SIZE - nh)
-
-                alpha = fg[:, :, 3] / 255.0
-                for c in range(3):
-                    bg[y:y+nh, x:x+nw, c] = (
-                        alpha * fg[:, :, c] +
-                        (1 - alpha) * bg[y:y+nh, x:x+nw, c]
-                    )
-
-                xc, yc, bw, bh = normalize_bbox(x, y, nw, nh, IMG_SIZE, IMG_SIZE)
-                labels.append(f"{cls_id} {xc:.6f} {yc:.6f} {bw:.6f} {bh:.6f}")
-
-            img_name = f"{idx:06d}.jpg"
-            label_name = f"{idx:06d}.txt"
-
-            cv2.imwrite(str(OUT_ROOT / split / "images" / img_name), bg)
-
-            with open(OUT_ROOT / split / "labels" / label_name, "w") as f:
-                f.write("\n".join(labels))
-
-            if idx % 100 == 0:
-                print(f"  {idx}/{total_imgs}")
-
-    print("\n🎉 DONE! Dataset generated successfully")
+    print(f"\n🎉 DONE! Total images: {img_id}")
+    print(f"📁 Output: {OUT_ROOT.absolute()}")
 
 
 if __name__ == "__main__":
