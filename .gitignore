@@ -1,0 +1,20 @@
+dataset/
+dataset_v2/
+dataset_v3/
+dataset_v4/
+dataset_v5/
+dataset_v6/
+dataset_v7/
+dataset_v8/
+dataset_v9/
+preprocessed_objects/
+runs/detect
+runs/
+*.pt
+
+# Ignore virtual environment
+.venv/
+.venv_gpu/
+
+venv/
+venv_gpu/

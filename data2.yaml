@@ -1,0 +1,364 @@
+path: dataset_v2
+train: train/images
+val: valid/images
+test: test/images
+
+nc: 357
+names:
+  0: adzuki beans
+  1: all-purpose flour
+  2: allspice
+  3: almond flour
+  4: amaranth
+  5: apricot
+  6: arugula
+  7: asparagus
+  8: avocado
+  9: avocado oil
+  10: bamboo shoots
+  11: banana
+  12: barley
+  13: beef
+  14: beet
+  15: beluga lentils
+  16: bergamot
+  17: bison
+  18: black beans
+  19: black cherry
+  20: black lentils
+  21: black olives
+  22: black salt
+  23: black sapote
+  24: black-eyed peas
+  25: blackberry
+  26: blueberry
+  27: bok choy
+  28: boysenberry
+  29: bread flour
+  30: breadfruit
+  31: broccoli
+  32: broccoli stem
+  33: brown lentils
+  34: brown sugar
+  35: brussels sprouts
+  36: buckwheat
+  37: buffalo
+  38: bulgur
+  39: cabbage
+  40: cake flour
+  41: cane sugar
+  42: canned anchovies
+  43: canned apples
+  44: canned apricots
+  45: canned artichoke hearts
+  46: canned baked beans
+  47: canned beets
+  48: canned black beans
+  49: canned cannellini beans
+  50: canned carrots
+  51: canned cherries
+  52: canned chickpeas
+  53: canned clams
+  54: canned corn
+  55: canned crab
+  56: canned fruit cocktail
+  57: canned green beans
+  58: canned kidney beans
+  59: canned lima beans
+  60: canned lychee
+  61: canned mackerel
+  62: canned mandarin oranges
+  63: canned mango
+  64: canned mushrooms
+  65: canned navy beans
+  66: canned olives
+  67: canned oysters
+  68: canned peaches
+  69: canned pears
+  70: canned peas
+  71: canned pineapples
+  72: canned pinto beans
+  73: canned pumpkin
+  74: canned refried beans
+  75: canned salmon
+  76: canned sardines
+  77: canned shrimp
+  78: canned tomatoes
+  79: canned trout
+  80: canned tuna
+  81: cannellini beans
+  82: canola oil
+  83: cardamom
+  84: caribou
+  85: carrot
+  86: castelvetrano olives
+  87: cauliflower
+  88: celeriac
+  89: celery
+  90: celtic salt
+  91: cerignola olives
+  92: chard stalk
+  93: cherimoya
+  94: cherry
+  95: chia
+  96: chicken
+  97: chickpeas
+  98: chive
+  99: cinnamon
+  100: clove
+  101: coconut
+  102: coconut flour
+  103: coconut oil
+  104: coconut sugar
+  105: cod
+  106: collard greens
+  107: coriander
+  108: corn grits
+  109: cornmeal
+  110: couscous
+  111: crab
+  112: cracked wheat
+  113: cranberry
+  114: cumin
+  115: daikon
+  116: date sugar
+  117: deer
+  118: demerara sugar
+  119: dragon fruit
+  120: duck
+  121: durian
+  122: einkorn
+  123: elderberry
+  124: elephant garlic
+  125: elk
+  126: emmer
+  127: farfalle
+  128: farro
+  129: fava beans
+  130: fennel
+  131: fettuccine
+  132: field peas
+  133: flaky salt
+  134: flaxseed oil
+  135: freekeh
+  136: french lentils
+  137: fusilli
+  138: gaeta olives
+  139: garlic
+  140: ginger
+  141: gluten-free flour
+  142: goat
+  143: goji berry
+  144: golden lentils
+  145: goose
+  146: grapefruit
+  147: grapeseed oil
+  148: green lentils
+  149: green olives
+  150: green onion
+  151: grouse
+  152: guava
+  153: guinea fowl
+  154: haddock
+  155: huckleberry
+  156: iodized salt
+  157: jackfruit
+  158: jarred artichokes
+  159: jarred capers
+  160: jarred horseradish
+  161: jarred olives
+  162: jarred pasta sauce
+  163: jarred peppers
+  164: jarred pesto
+  165: jarred pickles
+  166: jarred salsa
+  167: jarred sun-dried tomatoes
+  168: kalamata olives
+  169: kale
+  170: kamut
+  171: kidney beans
+  172: kiwi
+  173: kohlrabi
+  174: kosher salt
+  175: kumquat
+  176: lamb
+  177: lasagna
+  178: leek
+  179: lemon
+  180: lemongrass
+  181: lettuce
+  182: ligurian olives
+  183: lima beans
+  184: lime
+  185: linguine
+  186: lobster
+  187: lychee
+  188: macaroni
+  189: mackerel
+  190: mandarin
+  191: mango
+  192: manzanilla olives
+  193: millet
+  194: mulberry
+  195: mung beans
+  196: muscovado sugar
+  197: mustard greens
+  198: mutton
+  199: navy beans
+  200: nectarine
+  201: nicoise olives
+  202: nutmeg
+  203: oat flour
+  204: oats
+  205: octopus
+  206: olive oil
+  207: onion
+  208: orange
+  209: orange lentils
+  210: ostrich
+  211: papaya
+  212: paprika
+  213: parsnip
+  214: partridge
+  215: passion fruit
+  216: pasta
+  217: pawpaw
+  218: peach
+  219: peanut oil
+  220: pearl onion
+  221: penne
+  222: pheasant
+  223: picholine olives
+  224: pickling salt
+  225: pigeon peas
+  226: pineapple
+  227: pink salt
+  228: pinto beans
+  229: plum
+  230: pluot
+  231: polenta
+  232: pomelo
+  233: pork
+  234: potato
+  235: powdered sugar
+  236: quail
+  237: quinoa
+  238: rabbit
+  239: radicchio
+  240: radish
+  241: ramps
+  242: raspberry
+  243: raw sugar
+  244: red lentils
+  245: rhubarb
+  246: rice
+  247: rigatoni
+  248: romaine
+  249: rotini
+  250: rutabaga
+  251: rye flour
+  252: salmon
+  253: santol
+  254: sapote
+  255: savoy cabbage
+  256: scallion
+  257: scallop
+  258: sea salt
+  259: self-rising flour
+  260: semolina
+  261: sesame oil
+  262: shallot
+  263: shrimp
+  264: smoked salt
+  265: snap peas
+  266: snow peas
+  267: sorghum
+  268: sour cherry
+  269: soursop
+  270: soybeans
+  271: spaghetti
+  272: spanish pardina lentils
+  273: spelt
+  274: spinach
+  275: split peas
+  276: spring onion
+  277: sprouted adzuki beans
+  278: sprouted black beans
+  279: sprouted chickpeas
+  280: sprouted green peas
+  281: sprouted kidney beans
+  282: sprouted lentils
+  283: sprouted mung beans
+  284: sprouted navy beans
+  285: sprouted pinto beans
+  286: sprouted soybeans
+  287: squab
+  288: squirrel
+  289: strawberry
+  290: sunflower oil
+  291: sweet potato
+  292: swiss chard
+  293: table salt
+  294: tangerine
+  295: teff
+  296: tuna
+  297: turbinado sugar
+  298: turkey
+  299: turmeric
+  300: turnip
+  301: vegetable oil
+  302: venison
+  303: watercress
+  304: wheat bran
+  305: white flour
+  306: white peach
+  307: white peas
+  308: white rice
+  309: white sugar
+  310: whole wheat flour
+  311: wild boar
+  312: yellow lentils
+  313: yellow peas
+  314: yuzu
+  315: bacon_slices
+  316: baguette
+  317: bell_pepper
+  318: bread
+  319: butter
+  320: cheese
+  321: chicken_breast
+  322: chicken_thigh
+  323: chili_pepper
+  324: chili_sauce
+  325: coconut_water
+  326: coffee
+  327: corn
+  328: dumpling_wrapper
+  329: egg
+  330: fish_sauce
+  331: glass_noodles
+  332: ham
+  333: hoisin_sauce
+  334: honey
+  335: instant_noodles
+  336: ketchup
+  337: mayonnaise
+  338: milk
+  339: minced_meat
+  340: mushroom
+  341: oyster_sauce
+  342: pork_belly
+  343: rice_noodles
+  344: sausage
+  345: soy_sauce
+  346: yogurt
+  347: apple
+  348: beetroot
+  349: cucumber
+  350: eggplant
+  351: grapes
+  352: pear
+  353: peas
+  354: pomegranate
+  355: tomato
+  356: watermelon

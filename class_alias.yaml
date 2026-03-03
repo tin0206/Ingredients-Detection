@@ -1,0 +1,28 @@
+bell_pepper:
+  - bell pepper
+  - capsicum
+
+chili_pepper:
+  - chilli pepper
+  - jalepeno
+
+radish:
+  - raddish
+
+soybeans:
+  - soy beans
+
+sweet_potato:
+  - sweetpotato
+
+corn:
+  - sweetcorn
+
+peas:
+  - green peas
+
+garlic:
+  - garlic_bulb
+
+ginger:
+  - ginger_root

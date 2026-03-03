@@ -1,0 +1,7 @@
+DATASET SUMMARY
+========================================
+Total images: 35000
+Total instances: 171438
+Average objects per image: 4.9
+Missing classes: 10
+Rare classes (<30% median): 0

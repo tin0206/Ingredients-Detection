@@ -1,0 +1,27 @@
+path: dataset_v7
+train: train/images
+val: val/images
+test: test/images
+nc: 21
+names:
+  0: bacon
+  1: bread
+  2: butter
+  3: cheese
+  4: chicken_breast
+  5: chicken_thigh
+  6: chili_pepper
+  7: chili_sauce
+  8: coffee
+  9: corn
+  10: cucumber
+  11: dumpling_wrapper
+  12: egg
+  13: fish_sauce
+  14: garlic_bulb
+  15: ginger_root
+  16: glass_noodles
+  17: ham
+  18: milk
+  19: mushroom
+  20: sausage

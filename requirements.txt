@@ -1,0 +1,11 @@
+opencv-python
+pyyaml
+numpy
+pillow
+rembg
+datasets
+torch
+torchvision
+ultralytics
+onnxruntime
+tqdm
