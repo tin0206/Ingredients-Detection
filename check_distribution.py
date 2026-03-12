@@ -1,37 +1,39 @@
 import os
 from collections import Counter
+import yaml
 from pathlib import Path
 
-# chỉnh path nếu cần
-dataset_path = Path("dataset_v5")
+def check_distribution(label_dir, yaml_path):
+    # Load tên class từ file yaml
+    with open(yaml_path, 'r', encoding='utf-8') as f:
+        data = yaml.safe_load(f)
+        class_names = data['names']
 
-splits = ["train", "val"]  # có thể thêm "test"
-class_counter = Counter()
+    label_files = list(Path(label_dir).glob('*.txt'))
+    stats = Counter()
 
-for split in splits:
-    labels_dir = dataset_path / split / "labels"
+    print(f"Scanning {len(label_files)} label files...")
     
-    for label_file in labels_dir.glob("*.txt"):
-        with open(label_file, "r") as f:
+    for lbl in label_files:
+        with open(lbl, 'r') as f:
             for line in f:
-                if line.strip():
-                    class_id = int(line.split()[0])
-                    class_counter[class_id] += 1
+                class_id = int(line.split()[0])
+                stats[class_id] += 1
 
-# In kết quả
-print("Total instances:", sum(class_counter.values()))
-print("Number of classes found:", len(class_counter))
+    # In kết quả theo thứ tự số lượng giảm dần
+    print(f"{'ID':<5} | {'Class Name':<25} | {'Count':<10}")
+    print("-" * 45)
+    
+    for cid, count in stats.most_common():
+        name = class_names.get(cid, "Unknown")
+        print(f"{cid:<5} | {name:<25} | {count:<10}")
 
-total_classes = 317
-missing = [i for i in range(total_classes) if i not in class_counter]
+    # Kiểm tra xem có class nào bị 0 instance không
+    missing = set(class_names.keys()) - set(stats.keys())
+    if missing:
+        print(f"\n⚠ CẢNH BÁO: Có {len(missing)} class không có dữ liệu:")
+        for m in missing:
+            print(f"- {m}: {class_names[m]}")
 
-print("Missing classes:", missing)
-print("Number missing:", len(missing))
-
-print("\nTop 20 most common classes:")
-for cls, count in class_counter.most_common(20):
-    print(f"Class {cls}: {count}")
-
-print("\nLeast common classes:")
-for cls, count in sorted(class_counter.items(), key=lambda x: x[1])[:20]:
-    print(f"Class {cls}: {count}")
+# Chạy thử cho tập train
+check_distribution("dataset_v12/train/labels", "data12.yaml")

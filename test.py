@@ -7,13 +7,14 @@ def test_image():
     # model = YOLO("runs/detect/ingredients_multi_v2_inc2/weights/best.pt")
     
     #dataset
-    model = YOLO("runs/detect/ingredients_multi_v6_inc45/weights/best.pt")
+    # model = YOLO("runs/detect/ingredients_multi_v6_inc45/weights/best.pt")
+    model = YOLO("runs/detect/train5/weights/best.pt")
 
     # inference
     results = model(
-        source="test4.jpg",   # đường dẫn ảnh
+        source="test.jpg",   # đường dẫn ảnh
         imgsz=640,
-        conf=0.05,
+        conf=0.01,
         save=True            # lưu ảnh kết quả
     )
     

@@ -1,0 +1,2 @@
+[03/08 21:49:03 d2.engine.hooks]: Overall training speed: 19998 iterations in 3:42:40 (0.6681 s / it)
+[03/08 21:49:03 d2.engine.hooks]: Total training time: 3:42:55 (0:00:15 on hooks)

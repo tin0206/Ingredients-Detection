@@ -1,0 +1,1 @@
+uns/detect/train5/weights/best.pt

@@ -8,10 +8,10 @@ from collections import defaultdict
 # ==============================
 # CONFIG
 # ==============================
-DATA_YAML = "data6.yaml"
-DATASET_ROOT = "dataset_v6"
+DATA_YAML = "data11.yaml"
+DATASET_ROOT = "dataset_v11"
 SPLITS = ["train", "val", "test"]
-OUTPUT_DIR = "eda_results_v6"
+OUTPUT_DIR = "eda_results_v11"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 

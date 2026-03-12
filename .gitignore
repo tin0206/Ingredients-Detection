@@ -7,9 +7,13 @@ dataset_v6/
 dataset_v7/
 dataset_v8/
 dataset_v9/
+dataset_v11/
+dataset_v12/
 preprocessed_objects/
 runs/detect
 runs/
+output_faster_rcnn/
+output_retinanet/
 *.pt
 
 # Ignore virtual environment

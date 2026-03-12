@@ -1,0 +1,377 @@
+     Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      46/70      5.96G      1.409      4.509      1.544        324        640: 100% ━━━━━━━━━━━━ 1250/1250 4.3it/s 4:54
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.6it/s 27.3s
+                   all       5000      33949      0.921      0.813       0.89      0.548
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      47/70      6.04G        1.4      4.443      1.538        325        640: 100% ━━━━━━━━━━━━ 1250/1250 4.3it/s 4:54
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.6it/s 27.2s
+                   all       5000      33949      0.922      0.813       0.89      0.549
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      48/70       6.1G      1.398      4.394      1.531        318        640: 100% ━━━━━━━━━━━━ 1250/1250 4.3it/s 4:54
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.6it/s 27.4s
+                   all       5000      33949      0.921      0.815      0.891       0.55
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      49/70      6.18G      1.393      4.372       1.52        352        640: 100% ━━━━━━━━━━━━ 1250/1250 4.3it/s 4:54
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.6it/s 27.2s
+                   all       5000      33949      0.922      0.816      0.892      0.551
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      50/70      6.08G      1.386      4.329      1.521        286        640: 100% ━━━━━━━━━━━━ 1250/1250 4.2it/s 4:54
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.5it/s 27.7s
+                   all       5000      33949      0.922      0.818      0.892      0.552
+Closing dataloader mosaic
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      51/70      5.83G      1.267      3.151      1.611        155        640: 100% ━━━━━━━━━━━━ 1250/1250 4.4it/s 4:46
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.6it/s 27.1s
+                   all       5000      33949      0.924      0.818      0.893      0.554
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      52/70       5.9G      1.251      3.076      1.592        172        640: 100% ━━━━━━━━━━━━ 1250/1250 4.4it/s 4:46
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.6it/s 27.3s
+                   all       5000      33949      0.923       0.82      0.894      0.555
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      53/70      5.88G      1.241      3.027      1.585        177        640: 100% ━━━━━━━━━━━━ 1250/1250 4.4it/s 4:46
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.5it/s 27.5s
+                   all       5000      33949      0.924       0.82      0.895      0.557
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      54/70      5.86G       1.23       2.96      1.577        131        640: 100% ━━━━━━━━━━━━ 1250/1250 4.4it/s 4:45
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.6it/s 27.2s
+                   all       5000      33949      0.926      0.821      0.895      0.558
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      55/70       5.9G      1.222       2.92      1.567        128        640: 100% ━━━━━━━━━━━━ 1250/1250 4.4it/s 4:45
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.6it/s 27.3s
+                   all       5000      33949      0.926      0.822      0.896       0.56
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      56/70       5.9G      1.211      2.876      1.556        102        640: 100% ━━━━━━━━━━━━ 1250/1250 4.4it/s 4:45
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.5it/s 27.9s
+                   all       5000      33949      0.927      0.822      0.897      0.561
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      57/70      5.87G      1.203      2.838      1.548        103        640: 100% ━━━━━━━━━━━━ 1250/1250 4.4it/s 4:46
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.6it/s 27.2s
+                   all       5000      33949      0.928      0.823      0.898      0.563
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      58/70      5.91G      1.194      2.784       1.54        110        640: 100% ━━━━━━━━━━━━ 1250/1250 4.4it/s 4:46
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.6it/s 27.1s
+                   all       5000      33949      0.928      0.824      0.898      0.564
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      59/70      5.91G      1.187      2.761       1.53        115        640: 100% ━━━━━━━━━━━━ 1250/1250 4.4it/s 4:46
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.6it/s 27.4s
+                   all       5000      33949       0.93      0.825      0.899      0.566
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      60/70      5.84G       1.18      2.734      1.528        182        640: 100% ━━━━━━━━━━━━ 1250/1250 4.4it/s 4:46
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.6it/s 27.1s
+                   all       5000      33949      0.931      0.826        0.9      0.567
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      61/70      5.92G      1.177      2.713      1.518         84        640: 100% ━━━━━━━━━━━━ 1250/1250 4.4it/s 4:46
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.6it/s 27.4s
+                   all       5000      33949      0.932      0.826      0.901      0.568
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      62/70      5.83G      1.169      2.676      1.513        115        640: 100% ━━━━━━━━━━━━ 1250/1250 4.4it/s 4:46
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.5it/s 27.5s
+                   all       5000      33949      0.931      0.827      0.901      0.569
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      63/70      5.86G      1.164      2.662      1.509        139        640: 100% ━━━━━━━━━━━━ 1250/1250 4.4it/s 4:45
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.7it/s 26.8s
+                   all       5000      33949      0.931      0.828      0.901      0.571
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      64/70       5.9G       1.16      2.637      1.505        131        640: 100% ━━━━━━━━━━━━ 1250/1250 4.4it/s 4:46
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.6it/s 27.2s
+                   all       5000      33949      0.932      0.828      0.902      0.572
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      65/70      5.88G      1.157      2.624        1.5        126        640: 100% ━━━━━━━━━━━━ 1250/1250 4.3it/s 4:48
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.6it/s 27.1s
+                   all       5000      33949      0.932      0.829      0.902      0.572
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      66/70      5.85G      1.153      2.608      1.499        137        640: 100% ━━━━━━━━━━━━ 1250/1250 4.3it/s 4:53
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.4it/s 28.5s
+                   all       5000      33949      0.933      0.829      0.903      0.573
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      67/70      5.91G      1.149      2.591      1.491         94        640: 100% ━━━━━━━━━━━━ 1250/1250 4.2it/s 4:58
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.4it/s 28.6s
+                   all       5000      33949      0.934      0.829      0.903      0.574
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      68/70       5.9G      1.145      2.571      1.491        124        640: 100% ━━━━━━━━━━━━ 1250/1250 4.3it/s 4:48
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.5it/s 28.0s
+                   all       5000      33949      0.933       0.83      0.903      0.575
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      69/70      5.87G      1.144      2.563      1.486        179        640: 100% ━━━━━━━━━━━━ 1250/1250 4.3it/s 4:50
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.5it/s 27.8s
+                   all       5000      33949      0.933      0.831      0.904      0.576
+
+      Epoch    GPU_mem   box_loss   cls_loss   dfl_loss  Instances       Size
+      70/70      5.91G      1.142      2.565      1.489        162        640: 100% ━━━━━━━━━━━━ 1250/1250 4.3it/s 4:52
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.5it/s 27.8s
+                   all       5000      33949      0.933      0.831      0.904      0.577
+
+70 epochs completed in 6.325 hours.
+Optimizer stripped from D:\Code\Ingredients-Detection\runs\detect\train5\weights\last.pt, 19.4MB
+Optimizer stripped from D:\Code\Ingredients-Detection\runs\detect\train5\weights\best.pt, 19.4MB
+
+Validating D:\Code\Ingredients-Detection\runs\detect\train5\weights\best.pt...
+Ultralytics 8.4.11  Python-3.11.0 torch-2.5.1+cu121 CUDA:0 (NVIDIA GeForce RTX 3070, 8192MiB)
+YOLO11s summary (fused): 101 layers, 9,506,067 parameters, 0 gradients, 21.8 GFLOPs
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 125/125 4.8it/s 26.0s
+                   all       5000      33949      0.933      0.831      0.904      0.577
+           adzuki_bean        146        147      0.944       0.83      0.879      0.494
+              allspice        131        133      0.936      0.875      0.927      0.699
+              amaranth        133        136      0.937      0.868      0.939      0.687
+               anchovy        154        157      0.913      0.898      0.931      0.532
+                 apple        132        134      0.966      0.881      0.925      0.654
+               apricot        144        144      0.906      0.785      0.853      0.513
+             artichoke        138        139      0.953      0.799      0.873      0.572
+       artichoke_heart        146        147      0.965      0.937      0.957      0.717
+               arugula        144        145      0.912       0.79      0.854      0.529
+             asparagus        153        154      0.922      0.851      0.906      0.524
+               avocado        128        128      0.932      0.914      0.955      0.633
+           avocado_oil        128        131      0.979      0.908      0.951      0.646
+                 bacon        137        137      0.983      0.912      0.933      0.707
+            baked_bean        140        143      0.941      0.832      0.892      0.525
+          bamboo_shoot        134        134      0.977      0.936      0.975       0.65
+                banana        142        142      0.932      0.796      0.883      0.563
+                barley        147        149      0.933      0.698      0.841      0.503
+                  beef        143        144      0.937      0.925      0.952      0.623
+                  beet        146        146      0.927      0.784      0.864       0.47
+              bergamot        153        155      0.882      0.845        0.9      0.519
+                 bison        144        145      0.924       0.92      0.932       0.56
+            black_bean        128        128       0.91      0.872      0.911      0.638
+          black_cherry        142        142      0.931      0.858        0.9      0.518
+          black_sapote        145        145       0.97      0.878      0.936      0.563
+            blackberry        150        152      0.921      0.908      0.968      0.614
+             blueberry        135        135      0.969      0.859      0.924      0.551
+              bok_choy        139        140      0.939      0.871      0.917      0.591
+           boysenberry        140        142      0.912       0.81      0.912      0.565
+                 bread        137        138      0.964      0.928      0.937       0.74
+            breadfruit        139        141      0.914       0.78      0.872      0.505
+              broccoli        131        134      0.814      0.784      0.833      0.498
+         broccoli_stem        150        151      0.864      0.795      0.885      0.541
+       brussels_sprout        142        143          1      0.881      0.955      0.607
+             buckwheat        138        138      0.864      0.804      0.869      0.558
+               buffalo        134        137       0.92      0.803      0.913      0.611
+                bulgur        148        149      0.947      0.719      0.851      0.547
+                butter        145        146      0.998      0.904      0.955        0.7
+               cabbage        144        146      0.939      0.847      0.946      0.619
+       cannellini_bean        133        135      0.912      0.842      0.929      0.616
+            canola_oil        143        145      0.986      0.945      0.966       0.76
+                 caper        133        133      0.911      0.852      0.925       0.66
+              cardamom        135        136        0.9       0.75      0.849      0.539
+               caribou        129        132      0.941      0.773      0.882      0.497
+                carrot        141        142      0.833      0.796      0.856      0.462
+           cauliflower        148        148      0.932      0.892      0.943      0.584
+              celeriac        139        139      0.757      0.717      0.799      0.458
+                celery        141        143      0.831      0.722      0.828      0.483
+           chard_stalk        150        151      0.871      0.714      0.794      0.449
+                cheese        144        146      0.985      0.905      0.957      0.603
+             cherimoya        138        139      0.986      0.871      0.914      0.554
+                cherry        145        146      0.909      0.752      0.845      0.483
+                  chia        152        152       0.87      0.697      0.811      0.485
+               chicken        130        130      0.906      0.818      0.897      0.549
+        chicken_breast        136        138      0.978      0.942       0.97      0.749
+         chicken_thigh        138        138      0.994      0.877      0.934      0.658
+              chickpea        132        132      0.887      0.765      0.841      0.552
+          chili_pepper        128        129      0.976      0.938      0.968      0.686
+           chili_sauce        138        141          1      0.908      0.942      0.607
+                 chive        141        142       0.93      0.844        0.9      0.481
+              cinnamon        140        144      0.918      0.775      0.887      0.599
+                  clam        138        139      0.946      0.885      0.936      0.621
+                 clove        143        143      0.954      0.864       0.94       0.64
+               coconut        127        130        0.9      0.823      0.898      0.561
+           coconut_oil        136        136      0.915      0.795      0.891      0.604
+                   cod        138        139      0.866      0.691      0.796      0.446
+                coffee        159        160      0.893      0.631      0.763       0.46
+         collard_green        142        144      0.954       0.84      0.926      0.555
+             coriander        146        147      0.898      0.783      0.873       0.59
+                  corn        131        131      0.923      0.817      0.909      0.601
+             corn_grit        157        157      0.924      0.847      0.905      0.565
+              cornmeal        135        136       0.95      0.919      0.945      0.674
+              couscous        139        139       0.97      0.914      0.959       0.66
+                  crab        144        145      0.927      0.855       0.93       0.57
+         cracked_wheat        142        143      0.974      0.785      0.895      0.561
+             cranberry        143        145      0.976      0.903      0.961      0.596
+              cucumber        133        134      0.965      0.817      0.887      0.597
+                 cumin        155        155       0.97       0.84      0.919      0.675
+                daikon        150        150      0.938      0.811      0.893      0.525
+                  deer        138        138      0.898      0.848      0.914       0.57
+          dragon_fruit        140        140      0.985        0.9       0.96      0.585
+                  duck        147        151      0.946      0.828      0.915      0.482
+      dumpling_wrapper        136        137      0.953      0.876      0.936       0.71
+                durian        139        140      0.871       0.75      0.847      0.424
+                   egg        143        145      0.965      0.949      0.969      0.799
+               einkorn        138        139      0.948      0.799      0.894      0.598
+            elderberry        150        150      0.829      0.747      0.842      0.435
+                   elk        144        145      0.924      0.862      0.941      0.621
+                 emmer        144        147      0.905      0.782      0.868      0.548
+              farfalle        142        143      0.948      0.636      0.756        0.4
+                 farro        143        144      0.874      0.819      0.902      0.562
+             fava_bean        142        144      0.924      0.896      0.924      0.527
+                fennel        127        127       0.93       0.84      0.908      0.561
+            fettuccine        146        146      0.956      0.829      0.895      0.524
+            fish_sauce        144        147      0.993      0.944      0.976      0.812
+          flaxseed_oil        143        143      0.933      0.877      0.954      0.627
+                 flour        131        131      0.905      0.727       0.84      0.546
+               freekeh        137        138      0.926      0.816      0.908      0.565
+        fruit_cocktail        133        133      0.984      0.905      0.933      0.682
+               fusilli        136        139       0.92      0.577      0.755      0.457
+                garlic        120        121      0.911      0.843      0.893      0.548
+           garlic_bulb        155        158      0.995      0.968      0.984      0.787
+                ginger        133        134       0.98      0.813       0.88      0.578
+          glass_noodle        134        137      0.989      0.912      0.932       0.68
+                  goat        124        126      0.956      0.864      0.946      0.608
+            goji_berry        151        152      0.941      0.836      0.917      0.596
+                 goose        127        131      0.927      0.885      0.926       0.56
+            grapefruit        149        150      0.957      0.888      0.939      0.565
+         grapeseed_oil        129        129          1      0.903      0.968      0.693
+            green_bean        140        140      0.953      0.879      0.928       0.59
+           green_onion        147        148      0.873      0.742      0.826      0.504
+                grouse        142        143      0.905      0.811      0.894      0.559
+                 guava        139        140      0.918       0.85      0.903      0.576
+           guinea_fowl        137        140      0.992       0.91      0.962      0.594
+               haddock        138        138      0.971      0.891      0.951      0.572
+                   ham        145        145      0.969      0.931      0.956      0.728
+           horseradish        137        139      0.962      0.878       0.93      0.663
+           huckleberry        147        149      0.911      0.866        0.9      0.577
+             jackfruit        149        151      0.947      0.824      0.928      0.509
+                  kale        133        134      0.931      0.612      0.707      0.447
+                 kamut        139        139      0.956      0.776      0.907      0.559
+           kidney_bean        134        134      0.915      0.801      0.901       0.53
+                  kiwi        141        142      0.935      0.859      0.937      0.564
+              kohlrabi        133        137       0.95      0.824       0.89      0.557
+               kumquat        147        148      0.912      0.845      0.922      0.583
+                  lamb        146        146      0.968      0.835      0.922      0.563
+               lasagna        159        161      0.958      0.853      0.939      0.603
+                  leek        139        140      0.935      0.779      0.852      0.528
+                 lemon        139        140      0.902      0.858      0.919      0.627
+            lemongrass        149        149      0.888      0.866      0.913      0.567
+               lentils        134        136      0.913      0.485       0.61      0.358
+               lettuce        127        130      0.981      0.791      0.904      0.592
+             lima_bean        132        133      0.825      0.805      0.853      0.557
+                  lime        142        144      0.912      0.854       0.91      0.552
+              linguine        144        145      0.948      0.862      0.931      0.594
+               lobster        132        134      0.905      0.828      0.918      0.533
+                lychee        132        134      0.938      0.813      0.864      0.547
+              macaroni        144        145      0.958      0.786      0.902      0.602
+              mackerel        130        131      0.925       0.75      0.863      0.464
+              mandarin        134        134      0.927      0.856      0.895       0.59
+                 mango        133        134       0.95      0.806      0.931      0.569
+                  milk        140        140      0.963      0.814      0.861       0.59
+                millet        128        129      0.952      0.798      0.891       0.54
+              mulberry        141        142       0.91      0.761      0.886      0.516
+             mung_bean        142        144      0.868      0.743      0.849      0.521
+              mushroom        131        132      0.924      0.826      0.907       0.61
+         mustard_green        145        148      0.946       0.75      0.872       0.54
+                mutton        138        138       0.94      0.915      0.938      0.595
+             navy_bean        139        140       0.89        0.7      0.788      0.462
+             nectarine        141        141      0.949       0.83      0.908      0.577
+                nutmeg        146        148      0.916      0.816      0.887      0.626
+                   oat        145        145      0.973      0.745      0.895      0.572
+               octopus        157        158      0.993      0.893       0.95      0.613
+             olive_oil        157        157      0.916      0.879      0.919       0.58
+                olives        142        142      0.953       0.81        0.9      0.631
+                 onion        129        131      0.935      0.893       0.94      0.622
+                orange        139        140      0.902      0.807      0.913      0.588
+               ostrich        132        134      0.937      0.828      0.915      0.534
+                oyster        134        135      0.991      0.822      0.913      0.618
+                papaya        133        133       0.97       0.94      0.966      0.641
+               paprika        118        120       0.91      0.883      0.952      0.666
+               parsnip        158        159      0.949      0.822      0.904      0.532
+             partridge        130        132      0.921      0.773      0.873      0.508
+         passion_fruit        136        136      0.948      0.937      0.968      0.613
+                 pasta        132        133      0.834       0.82      0.869      0.544
+           pasta_sauce        152        153      0.959      0.908      0.934       0.62
+                pawpaw        130        131      0.941       0.87      0.917      0.509
+                 peach        140        141      0.934      0.808      0.894      0.565
+            peanut_oil        147        149      0.967      0.913      0.966      0.698
+                  pear        133        133      0.946      0.759      0.873      0.568
+                  peas        134        136      0.839      0.838      0.889      0.593
+                 penne        129        131       0.89      0.779      0.865      0.516
+                pepper        137        138      0.945      0.868       0.94      0.598
+                 pesto        134        135      0.926       0.83      0.891      0.548
+              pheasant        154        155      0.941      0.845      0.926      0.574
+                pickle        149        149      0.892      0.832      0.899      0.493
+             pineapple        130        131      0.934      0.824      0.896      0.577
+            pinto_bean        135        137      0.945      0.747      0.851      0.521
+                  plum        126        127      0.939      0.882      0.945      0.644
+                 pluot        133        133      0.957      0.831      0.889      0.593
+               polenta        129        129      0.936      0.884      0.943      0.589
+                pomelo        126        127      0.937      0.814      0.884      0.519
+                  pork        158        158      0.964       0.85      0.922      0.616
+                potato        138        139       0.95      0.878      0.932      0.611
+               pumpkin        139        140       0.96      0.914      0.976      0.751
+                 quail        140        140      0.849      0.764      0.813      0.441
+                quinoa        132        133      0.905      0.759      0.847      0.511
+                rabbit        143        143      0.991      0.775      0.919      0.564
+             radicchio        149        152      0.958      0.954      0.975      0.628
+                radish        151        153      0.956      0.882      0.939       0.59
+                  ramp        156        156      0.943      0.769      0.864      0.514
+             raspberry        131        132      0.967      0.917      0.944      0.643
+          refried_bean        144        144      0.924      0.938      0.962      0.688
+               rhubarb        127        129      0.943      0.897       0.94       0.52
+                  rice        136        137      0.941      0.832      0.928      0.669
+              rigatoni        148        150      0.958        0.8      0.913      0.586
+               romaine        145        146       0.97      0.895      0.946      0.573
+                rotini        150        150      0.926      0.748      0.887      0.534
+              rutabaga        138        138      0.953      0.876       0.96      0.559
+                salmon        138        139      0.864      0.755      0.851      0.505
+                 salsa        133        136      0.937      0.912      0.951      0.611
+                  salt        146        146      0.901      0.747      0.852      0.573
+                santol        146        149      0.937      0.796      0.899      0.548
+                sapote        139        139       0.98      0.935      0.977      0.666
+               sardine        129        131      0.964      0.901      0.951      0.574
+               sausage        139        140      0.992      0.935      0.973      0.732
+         savoy_cabbage        136        137      0.865      0.794      0.876      0.503
+               scallop        152        153      0.923      0.862        0.9      0.573
+              semolina        144        145      0.932      0.847      0.925      0.629
+            sesame_oil        135        135      0.959      0.867      0.936      0.545
+               shallot        139        139      0.921      0.849      0.909      0.576
+                shrimp        141        143      0.953      0.702      0.848      0.516
+               sorghum        148        152      0.942      0.868      0.933      0.629
+           sour_cherry        154        156      0.935      0.736      0.859      0.553
+               soursop        142        144      0.864      0.806      0.892      0.528
+               soybean        139        140      0.911      0.585      0.761      0.435
+             spaghetti        138        140      0.943      0.864      0.929      0.601
+                 spelt        143        145      0.954        0.8      0.887      0.549
+               spinach        137        138      0.932        0.8      0.899      0.612
+                 squab        138        142      0.962       0.88      0.932      0.543
+              squirrel        138        139      0.945      0.614      0.752        0.4
+            strawberry        136        137      0.991      0.838       0.96       0.59
+                 sugar        135        136      0.904      0.693      0.844      0.551
+      sun_dried_tomato        132        132      0.948      0.828      0.917      0.572
+         sunflower_oil        137        139      0.894      0.791      0.856      0.446
+          sweet_potato        133        135       0.97       0.83      0.953      0.641
+           swiss_chard        130        131      0.866      0.802      0.845      0.482
+             tangerine        150        152       0.87      0.842      0.902      0.548
+                  teff        142        143      0.983      0.804        0.9      0.583
+                tomato        135        136      0.953      0.902      0.952      0.658
+                 trout        142        144      0.929      0.817      0.919      0.586
+                  tuna        130        131      0.936      0.779      0.898      0.518
+                turkey        139        140      0.954      0.879      0.956      0.609
+              turmeric        148        148      0.941      0.861      0.932      0.685
+                turnip        128        131      0.917      0.848      0.908      0.551
+         vegetable_oil        128        130      0.917      0.854      0.929      0.664
+               venison        142        143      0.867      0.916      0.943      0.606
+            watercress        133        134      0.965      0.836      0.918      0.574
+            wheat_bran        145        146      0.944      0.836      0.912      0.549
+           white_peach        141        146      0.939       0.87      0.941      0.609
+             wild_boar        147        148      0.921      0.845      0.909      0.588
+                  yuzu        147        148       0.96      0.885       0.95      0.601
+Speed: 0.1ms preprocess, 2.5ms inference, 0.0ms loss, 0.7ms postprocess per image
