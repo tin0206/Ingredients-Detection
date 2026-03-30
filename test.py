@@ -2,17 +2,17 @@ from ultralytics import YOLO
 
 def test_image():
     # load model đã train
+    #current choice - yolo11s datasetv12
+    # model = YOLO("runs/detect/train5/weights/best.pt")
     
-    #dataset v3
-    # model = YOLO("runs/detect/ingredients_multi_v2_inc2/weights/best.pt")
+    model = YOLO("runs/detect/train19/weights/best.pt")
     
-    #dataset
-    # model = YOLO("runs/detect/ingredients_multi_v6_inc45/weights/best.pt")
-    model = YOLO("runs/detect/train5/weights/best.pt")
+    tests = ["test.jpg", "test2.jpg", "test3.jpg", "test4.jpg", "test5.jpg", "test6.jpg", "test7.jpg"]
+    
 
     # inference
     results = model(
-        source="test.jpg",   # đường dẫn ảnh
+        source=tests,
         imgsz=640,
         conf=0.01,
         save=True            # lưu ảnh kết quả

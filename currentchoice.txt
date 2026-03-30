@@ -1,1 +1,3 @@
-uns/detect/train5/weights/best.pt
+yolo11s: runs/detect/train5/weights/best.pt
+yolo26s: runs/detect/train8/weights/best.pt
+yolo26n: runs/detect/train19/weights/best.pt (current choice)
