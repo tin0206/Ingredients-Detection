@@ -1,19 +1,16 @@
 dataset/
-dataset_v2/
-dataset_v3/
-dataset_v4/
-dataset_v5/
+dataset_roboflow_v1/
+roboflow_dataset1/
+roboflow_dataset2/
 dataset_v6/
-dataset_v7/
-dataset_v8/
-dataset_v9/
 dataset_v11/
 dataset_v12/
-preprocessed_objects/
 runs/detect
 runs/
 output_faster_rcnn/
 output_retinanet/
+output_yolo26s/
+processed_ingredients/
 *.pt
 
 # Ignore virtual environment

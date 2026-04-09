@@ -72,3 +72,69 @@ jarred horseradish: horseradish
 flaky salt: flaky_salt
 glass_noodles: glass_noodle
 ginger_root: ginger
+
+cauliflower: cauliflower
+carrot: carrot
+garlic: garlic
+ginger: ginger
+mushroom: mushroom
+onion: onion
+potato: potato
+radish: radish
+tomato: tomato
+turnip: turnip
+okra__bhindi_: okra
+sajjyun__moringa_drumsticks_: okra
+
+palak__indian_spinach_: spinach
+palungo__nepali_spinach_: spinach
+bethu_ko_saag: spinach
+rayo_ko_saag: mustard_green
+tori_ko_saag: mustard_green
+onion_leaves: green_onion
+
+chili_pepper__khursani_: chili_pepper
+akabare_khursani: chili_pepper
+chili_powder: paprika
+coriander__dhaniya_: coriander
+cinnamon: cinnamon
+
+black_beans: black_bean
+green_peas: peas
+garden_peas: peas
+green_soyabean__hariyo_bhatmas_: soybean
+soyabean__bhatmas_: soybean
+red_beans: kidney_bean
+black_lentils: lentils
+green_lentils: lentils
+red_lentils: lentils
+yellow_lentils: lentils
+rahar_ko_daal: lentils
+
+beef: beef
+buff_meat: beef
+minced_meat: beef
+chicken: chicken
+mutton: mutton
+pork: pork
+fish: fish
+egg: egg
+
+rice__chamal_: rice
+beaten_rice__chiura_: rice
+noodle: pasta
+chowmein_noodles: pasta
+thukpa_noodles: pasta
+wheat: wheat
+
+# --- Nhóm Trái cây (Fruits) ---
+apple: apple
+avocado: avocado
+banana: banana
+orange: orange
+papaya: papaya
+pear: pear
+strawberry: strawberry
+lemon__nimbu_: lemon
+lime__kagati_: lime
+jack_fruit: jackfruit
