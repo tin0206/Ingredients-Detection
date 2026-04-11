@@ -5,7 +5,7 @@ import os
 def run_evaluation():
     # 1. Define paths to your best weights
     model_configs = {
-        "YOLO11s": {"path": "runs/detect/train5/weights/best.pt", "imgsz": 640},
+        "YOLO26s_100epochs": {"path": "runs/detect/train10/weights/best.pt", "imgsz": 640},
         "YOLO26s": {"path": "runs/detect/train8/weights/best.pt", "imgsz": 640} 
     }
 
@@ -46,8 +46,8 @@ def run_evaluation():
         df = pd.DataFrame(results_list)
         print("\nFINAL TEST SET COMPARISON:")
         print(df.to_string(index=False))
-        df.to_csv("test_set_comparison_results.csv", index=False)
-        print("\nResults saved to 'test_set_comparison_results.csv'")
+        df.to_csv("test_set_comparison_results_v3.csv", index=False)
+        print("\nResults saved to 'test_set_comparison_results_v3.csv'")
 
 # This block is MANDATORY on Windows to avoid the RuntimeError
 if __name__ == '__main__':

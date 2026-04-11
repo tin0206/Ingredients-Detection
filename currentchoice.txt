@@ -1,3 +1,4 @@
 yolo11s: runs/detect/train5/weights/best.pt
-yolo26s: runs/detect/train8/weights/best.pt (current choice)
-yolo26n: runs/detect/train19/weights/best.pt 
+yolo26s: runs/detect/train8/weights/best.pt
+yolo26n: runs/detect/train19/weights/best.pt
+yolo26s_new: runs/detect/train10/weights/best.pt (current choice)

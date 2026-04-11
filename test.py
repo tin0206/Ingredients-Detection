@@ -6,10 +6,9 @@ def test_image():
     # model = YOLO("runs/detect/train5/weights/best.pt")
     
     # model = YOLO("runs/detect/train8/weights/best.pt")
-    model = YOLO("D:/Code/Ingredients-Detection/output_yolo26s/YOLO26s_v22/weights/best.pt")
+    model = YOLO("runs/detect/train10/weights/best.pt")
     
     tests = ["test.jpg", "test2.jpg", "test3.jpg", "test4.jpg", "test5.jpg", "test6.jpg", "test7.jpg"]
-    
 
     # inference
     results = model(
