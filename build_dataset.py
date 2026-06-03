@@ -8,7 +8,6 @@ from collections import defaultdict
 from datasets import load_dataset, Image as HFImage
 from rembg import remove, new_session
 from PIL import Image
-from tqdm import tqdm
 
 # ================= CONFIG =================
 DATA_YAML = "data.yaml"
@@ -17,17 +16,18 @@ CLASS_MAPPING_YAML = "class_mapping.yaml"
 OUT_ROOT = Path("dataset")
 BACKGROUND_DIR = Path("backgrounds")
 EXTERNAL_PATH = Path("external_dataset")
-PROCESSED_PATH = Path("processed_ingredients") # Thư mục cache
+PROCESSED_DIR = Path("processed_ingredients")
 
-HF_DATASETS = ["Scuccorese/food-ingredients-dataset"]
+HF_DATASETS = [
+    "Scuccorese/food-ingredients-dataset"
+]
 
-MAX_PER_CLASS = 90
+MAX_PER_CLASS = 150
+
 CANVAS_MIN = 640
 CANVAS_MAX = 800
 
-# Ngưỡng pixel tối thiểu để nguyên liệu không bị mờ (pixelated)
-MIN_OBJ_SIZE = 45 
-
+# 🔥 Dense objects
 SCENE_TYPES = {
     "single": (1, 1),
     "medium": (3, 7),
@@ -35,9 +35,9 @@ SCENE_TYPES = {
 }
 
 SCENE_PROBS = {
-    "single": 0.20,
-    "medium": 0.35,
-    "dense": 0.45 # Tăng tỷ lệ dense để model học bối cảnh phức tạp
+    "single": 0.35,
+    "medium": 0.45,
+    "dense": 0.20
 }
 
 SPLITS = {
@@ -49,263 +49,698 @@ SPLITS = {
 REM_BG_SESSION = new_session("u2netp")
 # ==========================================
 
+
 # ---------- LOAD CLASS MAP ----------
 def load_class_map():
     with open(DATA_YAML, "r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
     return {v: int(k) for k, v in data["names"].items()}
 
+
 def load_special_mapping():
-    if not Path(CLASS_MAPPING_YAML).exists(): return {}
+    if not Path(CLASS_MAPPING_YAML).exists():
+        return {}
     with open(CLASS_MAPPING_YAML, "r", encoding="utf-8") as f:
         return yaml.safe_load(f) or {}
 
+
 SPECIAL_MAP = load_special_mapping()
 
+
 # ---------- NORMALIZE ----------
+# ===================== MERGE GROUP =====================
+MERGE_GROUPS = {
+    # ===== OIL =====
+    "oil": [
+        "olive_oil", "canola_oil", "grapeseed_oil", "peanut_oil",
+        "sesame_oil", "sunflower_oil", "vegetable_oil",
+        "avocado_oil", "flaxseed_oil", "coconut_oil"
+    ],
+
+    # ===== PASTA =====
+    "pasta": [
+        "spaghetti", "penne", "fusilli", "rigatoni",
+        "linguine", "fettuccine", "macaroni", "rotini", "farfalle"
+    ],
+
+    # ===== GRAIN =====
+    "grain": [
+        "barley", "oat", "millet", "sorghum", "teff",
+        "spelt", "farro", "emmer", "einkorn", "corn_grit", 
+        "cracked_wheat", "freekeh", "polenta", "wheat_bran", 
+        "barley", "oat", "millet", "sorghum", "teff", "spelt", "quinoa", "einkorn", "emmer", "farro", "kamut"
+    
+    ],
+
+    # ===== BEAN =====
+    "bean": [
+        "black_bean", "kidney_bean", "navy_bean", "pinto_bean",
+        "mung_bean", "adzuki_bean", "lima_bean",
+        "fava_bean", "cannellini_bean", "refried_bean"
+    ],
+    
+    # ===== CHICKEN =====
+    "chicken": [
+        "chicken", "chicken_breast", "chicken_thigh"
+    ],
+
+    # ===== GARLIC =====
+    "garlic": [
+        "garlic", "garlic_bulb"
+    ],
+
+    # ===== BROCCOLI =====
+    "broccoli": [
+        "broccoli", "broccoli_stem"
+    ],
+    
+    "cherry": [
+        "black_cherry", "sour_cherry"
+    ],
+    
+    "berry": [
+        "blackberry", "blueberry", "cranberry", "raspberry", "elderberry", "huckleberry", "mulberry", "boysenberry", "goji_berry"
+    ],
+}
+
+MERGE_LOOKUP = {}
+for target, sources in MERGE_GROUPS.items():
+    for s in sources:
+        MERGE_LOOKUP[s] = target
+        
+REMOVE_CLASSES = {
+    "artichoke_heart", "black_sapote", "bison", "buffalo", "bulgur", "buckwheat", 
+    "caribou", "chard_stalk", "cornmeal", "elk", "deer", 
+    "grouse", "guinea_fowl", "pawpaw",
+    "partridge", "pheasant", "quail", "salsa", "squab",
+    "squirrel", "semolina", "wild_boar", "ostrich", "venison"
+}
+
+# =========================
 def normalize_name(name):
     if not name:
         return None
-    
-    if "flour" in name:
-        return "flour"
-
-    # SALT
-    if "salt" in name:
-        return "salt"
-
-    # SUGAR
-    if "sugar" in name:
-        return "sugar"
-
-    # LENTILS
-    if "lentil" in name:
-        return "lentils"
-
-    # TOMATO
-    if "tomato" in name:
-        if "sun" in name:
-            return "sun_dried_tomato"
-        return "tomato"
-
-    # ANCHOVY
-    if "anchov" in name:
-        return "anchovy"
-
-    # OCTOPUS
-    if "octopus" in name:
-        return "octopus"
-
-    # ASPARAGUS
-    if "asparagus" in name:
-        return "asparagus"
-
-    # COUSCOUS
-    if "couscous" in name:
-        return "couscous"
 
     name = name.lower().strip()
     name = name.replace("-", "_")
     name = name.replace(" ", "_")
 
+    # remove canned / jarred
     for prefix in ["canned_", "jarred_"]:
         if name.startswith(prefix):
             name = name[len(prefix):]
 
-    if name in SPECIAL_MAP:
-        return SPECIAL_MAP[name]
+    # ===================== SPECIAL MAP =====================
+    special_map = {
 
+        # ===================== SINGULAR FIX =====================
+        "apples": "apple",
+        "apricots": "apricot",
+        "beets": "beet",
+        "carrots": "carrot",
+        "cherries": "cherry",
+        "mushrooms": "mushroom",
+        "peaches": "peach",
+        "pineapples": "pineapple",
+        "pears": "pear",
+        "tomatoes": "tomato",
+        "mandarin_oranges": "mandarin",
+
+        # ================= SALT =================
+        "sea_salt": "salt",
+        "kosher_salt": "salt",
+        "black_salt": "salt",
+        "pink_salt": "salt",
+        "table_salt": "salt",
+        "smoked_salt": "salt",
+        "iodized_salt": "salt",
+        "celtic_salt": "salt",
+        "pickling_salt": "salt",
+
+        # ================= SUGAR =================
+        "brown_sugar": "sugar",
+        "white_sugar": "sugar",
+        "powdered_sugar": "sugar",
+        "cane_sugar": "sugar",
+        "coconut_sugar": "sugar",
+        "raw_sugar": "sugar",
+        "demerara_sugar": "sugar",
+        "muscovado_sugar": "sugar",
+        "turbinado_sugar": "sugar",
+        "date_sugar": "sugar",
+
+        # ================= LENTILS =================
+        "beluga_lentils": "lentils",
+        "black_lentils": "lentils",
+        "brown_lentils": "lentils",
+        "french_lentils": "lentils",
+        "golden_lentils": "lentils",
+        "green_lentils": "lentils",
+        "orange_lentils": "lentils",
+        "red_lentils": "lentils",
+        "spanish_pardina_lentils": "lentils",
+        "yellow_lentils": "lentils",
+        "sprouted_lentils": "lentils",
+
+        # ================= PEAS =================
+        "green_peas": "peas",
+        "field_peas": "peas",
+        "pigeon_peas": "peas",
+        "snap_peas": "peas",
+        "snow_peas": "peas",
+        "split_peas": "peas",
+        "white_peas": "peas",
+        "yellow_peas": "peas",
+        "black_eyed_peas": "peas",
+        "sprouted_green_peas": "peas",
+
+        # ================= OLIVES =================
+        "castelvetrano_olives": "olives",
+        "cerignola_olives": "olives",
+        "gaeta_olives": "olives",
+        "kalamata_olives": "olives",
+        "ligurian_olives": "olives",
+        "manzanilla_olives": "olives",
+        "nicoise_olives": "olives",
+        "picholine_olives": "olives",
+        "black_olives": "olives",
+        "green_olives": "olives",
+
+        # ================= FLOUR =================
+        "all_purpose_flour": "flour",
+        "bread_flour": "flour",
+        "cake_flour": "flour",
+        "oat_flour": "flour",
+        "rye_flour": "flour",
+        "gluten_free_flour": "flour",
+        "self_rising_flour": "flour",
+        "white_flour": "flour",
+        "whole_wheat_flour": "flour",
+        "almond_flour": "flour",
+        "coconut_flour": "flour",
+
+        # ================= ONION =================
+        "spring_onion": "green_onion",
+        "scallion": "green_onion",
+        "pearl_onion": "onion",
+
+        # ================= GARLIC =================
+        "elephant_garlic": "garlic",
+
+        # ================= GINGER =================
+        "ginger_root": "ginger",
+
+        # ================= SPROUTED BEANS =================
+        "sprouted_adzuki_beans": "adzuki_bean",
+        "sprouted_black_beans": "black_bean",
+        "sprouted_chickpeas": "chickpea",
+        "sprouted_kidney_beans": "kidney_bean",
+        "sprouted_mung_beans": "mung_bean",
+        "sprouted_navy_beans": "navy_bean",
+        "sprouted_pinto_beans": "pinto_bean",
+        "sprouted_soybeans": "soybean",
+
+        # ================= BEAN UNIFY =================
+        "adzuki_beans": "adzuki_bean",
+        "black_beans": "black_bean",
+        "kidney_beans": "kidney_bean",
+        "mung_beans": "mung_bean",
+        "navy_beans": "navy_bean",
+        "pinto_beans": "pinto_bean",
+        "soybeans": "soybean",
+        "chickpeas": "chickpea",
+        
+        "white_rice": "rice",
+        
+        "glass_noodles": "glass_noodle",
+    }
+
+    if name in special_map:
+        name = special_map[name]
+
+    # ================= SAFE SINGULAR RULE =================
+    # chỉ áp dụng cho fruit/veg phổ biến
     if name.endswith("s") and not name.endswith("ss"):
         if name not in ["peas", "lentils", "olives"]:
             name = name[:-1]
+            
+    # ================= SPELLING FIX =================
+    spelling_fix = {
+        "anchovie": "anchovy",
+        "octopu": "octopus",
+        "couscou": "couscous",
+        "asparagu": "asparagus",
+        "sun_dried_tomatoe": "sun_dried_tomato",
+    }
 
+    if name in spelling_fix:
+        name = spelling_fix[name]
+        
+    if name == "couscouscucumber":
+        return None
+    
+    if name in REMOVE_CLASSES:
+        return None
+    
+    if name in MERGE_LOOKUP:
+        name = MERGE_LOOKUP[name]
+        
     return name
 
-# ---------- REMOVE BG & CACHE ----------
+def map_class(raw):
+    if not raw:
+        return None
+
+    raw = raw.lower().strip()
+    raw = raw.replace("-", "_").replace(" ", "_")
+
+    # 🔥 PRIORITY 1: mapping yaml
+    if raw in SPECIAL_MAP:
+        return SPECIAL_MAP[raw]
+
+    # 🔥 PRIORITY 2: fallback nhẹ (optional)
+    return normalize_name(raw)
+
+def sample_scene_type():
+    r = random.random()
+    cum = 0
+    for k, p in SCENE_PROBS.items():
+        cum += p
+        if r <= cum:
+            return k
+    return "dense"
+
+
+# ---------- REMOVE BG ----------
 def remove_bg(img_bgr):
     h0, w0 = img_bgr.shape[:2]
-    max_dim = 512 # Tăng lên một chút để giữ detail cho cache
+    max_dim = 384
     scale = min(max_dim / max(h0, w0), 1.0)
+
     if scale < 1.0:
-        img_bgr = cv2.resize(img_bgr, None, fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
+        img_bgr = cv2.resize(img_bgr, None, fx=scale, fy=scale)
 
     pil = Image.fromarray(cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB))
     fg = remove(pil, session=REM_BG_SESSION)
+
     return cv2.cvtColor(np.array(fg), cv2.COLOR_RGBA2BGRA)
 
-def preprocess_pool(pool):
-    """Tách nền 1 lần và lưu vào disk để dùng lại cực nhanh"""
-    PROCESSED_PATH.mkdir(exist_ok=True)
-    cached_pool = defaultdict(list)
-    
-    print("🚀 Pre-processing & Caching Background Removal...")
-    for cid, img_bytes_list in tqdm(pool.items()):
-        class_dir = PROCESSED_PATH / str(cid)
-        class_dir.mkdir(exist_ok=True)
-        
-        for i, img_bytes in enumerate(img_bytes_list):
-            out_file = class_dir / f"{i}.png"
-            if not out_file.exists():
-                img = cv2.imdecode(np.frombuffer(img_bytes, np.uint8), cv2.IMREAD_COLOR)
-                if img is None: continue
-                fg = remove_bg(img)
-                cv2.imwrite(str(out_file), fg)
-            cached_pool[cid].append(str(out_file))
-    return cached_pool
-
-# ---------- AUGMENTATION & PLACEMENT ----------
 def augment_fg(fg):
-    # 1. Rotate 0-360
+    # 1. Xoay ngẫu nhiên 0-360 độ
     angle = random.randint(0, 360)
     h, w = fg.shape[:2]
-    M = cv2.getRotationMatrix2D((w//2, h//2), angle, 1.0)
+    center = (w // 2, h // 2)
+    M = cv2.getRotationMatrix2D(center, angle, 1.0)
     
-    cos, sin = np.abs(M[0, 0]), np.abs(M[0, 1])
-    new_w, new_h = int((h * sin) + (w * cos)), int((h * cos) + (w * sin))
-    M[0, 2] += (new_w / 2) - (w // 2)
-    M[1, 2] += (new_h / 2) - (h // 2)
-    
-    fg = cv2.warpAffine(fg, M, (new_w, new_h), flags=cv2.INTER_LANCZOS4, borderMode=cv2.BORDER_CONSTANT, borderValue=(0,0,0,0))
+    # Tính toán kích thước mới sau khi xoay để không mất góc
+    cos = np.abs(M[0, 0])
+    sin = np.abs(M[0, 1])
+    new_w = int((h * sin) + (w * cos))
+    new_h = int((h * cos) + (w * sin))
+    M[0, 2] += (new_w / 2) - center[0]
+    M[1, 2] += (new_h / 2) - center[1]
+    fg = cv2.warpAffine(fg, M, (new_w, new_h), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT, borderValue=(0,0,0,0))
 
-    # 2. Random Flip
-    if random.random() > 0.5: fg = cv2.flip(fg, 1)
+    # 2. Lật ngẫu nhiên
+    if random.random() > 0.5:
+        fg = cv2.flip(fg, 1) # Lật ngang
 
-    # 3. Lightness/Contrast (Chỉ áp dụng kênh RGB)
-    alpha = random.uniform(0.8, 1.2)
-    beta = random.randint(-15, 15)
+    # 3. Thay đổi độ sáng/độ tương phản nhẹ
+    alpha = random.uniform(0.8, 1.2) # Contrast
+    beta = random.randint(-20, 20)   # Brightness
+    # Chỉ áp dụng lên kênh RGB (3 kênh đầu), giữ nguyên kênh Alpha (kênh 4)
     fg[:, :, :3] = cv2.convertScaleAbs(fg[:, :, :3], alpha=alpha, beta=beta)
+
     return fg
 
-def smart_resize(fg, canvas_size, scene):
-    h0, w0 = fg.shape[:2]
-    scale_map = {"single": 0.35, "medium": 0.18, "dense": 0.10}
-    max_scale_map = {"single": 0.85, "medium": 0.45, "dense": 0.25}
-    
-    scale = random.uniform(scale_map[scene], max_scale_map[scene])
-    
-    # Kiểm tra ngưỡng sắc nét
-    if min(h0, w0) * scale < MIN_OBJ_SIZE:
-        scale = MIN_OBJ_SIZE / min(h0, w0)
-        
-    # Đảm bảo không to hơn canvas
-    scale = min(scale, (canvas_size * 0.9) / max(h0, w0))
-    
-    return cv2.resize(fg, None, fx=scale, fy=scale, interpolation=cv2.INTER_LANCZOS4)
+# ---------- LOAD RANDOM BACKGROUND ----------
+def load_random_background(size):
+    bgs = list(BACKGROUND_DIR.glob("*.*"))
+    if not bgs:
+        return np.ones((size, size, 3), dtype=np.uint8) * 255
 
+    bg = cv2.imread(str(random.choice(bgs)))
+    if bg is None:
+        return np.ones((size, size, 3), dtype=np.uint8) * 255
+
+    h, w = bg.shape[:2]
+    scale = max(size / w, size / h)
+    bg = cv2.resize(bg, None, fx=scale, fy=scale)
+
+    y0 = random.randint(0, bg.shape[0] - size)
+    x0 = random.randint(0, bg.shape[1] - size)
+    bg = bg[y0:y0 + size, x0:x0 + size]
+
+    # ===== 🔥 AUGMENT BACKGROUND =====
+
+    # 1. Blur nhẹ (giúp foreground nổi hơn)
+    if random.random() < 0.5:
+        k = random.choice([3, 5, 7])
+        bg = cv2.GaussianBlur(bg, (k, k), 0)
+
+    # 2. Brightness / contrast
+    if random.random() < 0.7:
+        alpha = random.uniform(0.7, 1.3)  # contrast
+        beta = random.randint(-30, 30)    # brightness
+        bg = cv2.convertScaleAbs(bg, alpha=alpha, beta=beta)
+
+    # 3. Noise nhẹ (optional nhưng ngon)
+    if random.random() < 0.3:
+        noise = np.random.normal(0, 10, bg.shape).astype(np.int16)
+        bg = np.clip(bg.astype(np.int16) + noise, 0, 255).astype(np.uint8)
+
+    return bg
+
+# ---------- IOU ----------
 def iou(box1, box2):
-    xA, yA = max(box1[0], box2[0]), max(box1[1], box2[1])
-    xB, yB = min(box1[2], box2[2]), min(box1[3], box2[3])
-    inter = max(0, xB - xA) * max(0, yB - yA)
-    area1 = (box1[2]-box1[0])*(box1[3]-box1[1])
-    area2 = (box2[2]-box2[0])*(box2[3]-box2[1])
-    return inter / (area1 + area2 - inter + 1e-6)
+    xA = max(box1[0], box2[0])
+    yA = max(box1[1], box2[1])
+    xB = min(box1[2], box2[2])
+    yB = min(box1[3], box2[3])
 
+    inter = max(0, xB - xA) * max(0, yB - yA)
+    area1 = (box1[2] - box1[0]) * (box1[3] - box1[1])
+    area2 = (box2[2] - box2[0]) * (box2[3] - box2[1])
+    union = area1 + area2 - inter
+
+    return inter / union if union > 0 else 0
+
+# ---------- PLACE OBJECT (Clustered + Allow Overlap) ----------
 def place_object(canvas, fg, boxes, cluster_center):
     h, w = fg.shape[:2]
     H, W = canvas.shape[:2]
-    cx_c, cy_c = cluster_center
 
-    for _ in range(40):
-        # Cluster-based placement
-        x = int(np.random.normal(cx_c, W * 0.12))
-        y = int(np.random.normal(cy_c, H * 0.12))
-        x, y = max(0, min(W-w, x)), max(0, min(H-h, y))
+    if h >= H or w >= W:
+        return None
+
+    cx_cluster, cy_cluster = cluster_center
+
+    for _ in range(50):
+
+        # Gaussian around cluster center
+        x = int(np.random.normal(cx_cluster, W * 0.08))
+        y = int(np.random.normal(cy_cluster, H * 0.08))
+
+        x = max(0, min(W - w, x))
+        y = max(0, min(H - h, y))
 
         rect = (x, y, x + w, y + h)
-        if all(iou(rect, bx) < 0.25 for bx in boxes):
+
+        # allow slight overlap (IoU < 0.2)
+        if all(iou(rect, bx) < 0.2 for bx in boxes):
+
+            if fg.shape[2] != 4:
+                continue
             alpha = fg[:, :, 3] / 255.0
             for c in range(3):
-                canvas[y:y+h, x:x+w, c] = (alpha * fg[:, :, c] + (1 - alpha) * canvas[y:y+h, x:x+w, c])
+                canvas[y:y+h, x:x+w, c] = (
+                    alpha * fg[:, :, c] +
+                    (1 - alpha) * canvas[y:y+h, x:x+w, c]
+                )
+
             boxes.append(rect)
             return rect
+
     return None
 
-# ---------- MAIN WORKFLOW ----------
+
+# ---------- LOAD HF ----------
+def load_hf_pool(class_map):
+    pool = defaultdict(list)
+
+    for hf in HF_DATASETS:
+        print(f"📥 Loading {hf}")
+        ds = load_dataset(hf, split="train")
+        skip_count = 0
+
+        # Tối ưu: không decode ảnh ngay
+        if "image" in ds.features:
+            ds = ds.cast_column("image", HFImage(decode=False))
+
+        for s in ds:
+            # ===== LẤY RAW LABEL =====
+            if "label" in s and "label" in ds.features:
+                raw = ds.features["label"].names[s["label"]]
+            elif "ingredient" in s:
+                raw = s["ingredient"]
+            else:
+                continue
+
+            if not raw:
+                continue
+
+            raw = raw.lower().strip()
+            raw = raw.replace("-", "_").replace(" ", "_")
+
+            norm = map_class(raw)
+
+            if not norm:
+                continue
+
+            # ===== CHECK TRONG data.yaml =====
+            if norm not in class_map:
+                print(f"⛔ Skip {raw} → {norm} (not in data.yaml)")
+                skip_count += 1
+                continue
+
+            cid = class_map[norm]
+
+            # ===== LIMIT PER CLASS =====
+            if len(pool[cid]) >= MAX_PER_CLASS:
+                continue
+
+            # ===== LẤY IMAGE =====
+            img_info = s.get("image", None)
+            if not img_info:
+                continue
+
+            img_bytes = img_info.get("bytes", None)
+            if not img_bytes:
+                continue
+
+            pool[cid].append(img_bytes)
+
+    print("✅ Done HF loading")
+    print(f"⛔ Total skipped (HF): {skip_count}")
+
+    # Debug thống kê
+    print("\n📊 HF Pool stats:")
+    for cid, imgs in pool.items():
+        print(f"Class {cid}: {len(imgs)} images")
+
+    return pool
+
+# ---------- LOAD EXTERNAL DATASET ----------
+def load_external_dataset(pool, class_map):
+    if not EXTERNAL_PATH.exists():
+        print("⚠ No external_dataset found.")
+        return pool
+    
+    skip_count = 0
+
+    print("📥 Loading external_dataset")
+
+    for folder in EXTERNAL_PATH.iterdir():
+        if not folder.is_dir():
+            continue
+
+        raw_name = folder.name.lower().strip()
+
+        # 🔥 dùng mapping yaml
+        norm = map_class(raw_name)
+
+        if norm not in class_map:
+            print(f"⛔ Skip {raw_name} → mapped to {norm} (not in data.yaml)")
+            skip_count += 1
+            continue
+
+        cid = class_map[norm]
+
+        for img_path in folder.glob("*.*"):
+            try:
+                with open(img_path, "rb") as f:
+                    pool[cid].append(f.read())
+            except:
+                continue
+
+    print("✅ Done external_dataset")
+    print(f"⛔ Total skipped (external): {skip_count}")
+    return pool
+
+def preprocess_pool(pool):
+    processed_path = Path("processed_ingredients")
+    processed_path.mkdir(exist_ok=True)
+    
+    new_pool = defaultdict(list)
+    
+    for cid, img_list in pool.items():
+        class_dir = processed_path / str(cid)
+        class_dir.mkdir(exist_ok=True)
+        
+        for i, img_bytes in enumerate(img_list):
+            out_file = class_dir / f"{i}.png"
+            if out_file.exists():
+                new_pool[cid].append(str(out_file))
+                continue
+                
+            img = cv2.imdecode(np.frombuffer(img_bytes, np.uint8), cv2.IMREAD_COLOR)
+            if img is None: continue
+            
+            fg = remove_bg(img) # Gọi hàm remove_bg cũ của bạn
+            cv2.imwrite(str(out_file), fg)
+            new_pool[cid].append(str(out_file))
+            
+    return new_pool
+
+def get_processed_pool():
+    """
+    Quét trực tiếp thư mục processed_ingredients để lấy danh sách file đã có.
+    """
+    pool = defaultdict(list)
+    if not PROCESSED_DIR.exists():
+        return pool
+    
+    print(f"🔍 Đang quét thư mục: {PROCESSED_DIR}")
+    for class_folder in PROCESSED_DIR.iterdir():
+        if class_folder.is_dir():
+            cid = int(class_folder.name)
+            images = list(class_folder.glob("*.png"))
+            pool[cid].extend([str(img) for img in images])
+            
+    return pool
+
+# ---------- MAIN ----------
+# ---------- MAIN ----------
 def main():
     class_map = load_class_map()
     
-    # 1. Thu thập dữ liệu thô
-    pool = defaultdict(list)
-    # Load HF
-    for hf in HF_DATASETS:
-        ds = load_dataset(hf, split="train")
-        if "image" in ds.features: ds = ds.cast_column("image", HFImage(decode=False))
-        for s in ds:
-            raw = s.get("label") or s.get("ingredient")
-            if isinstance(raw, int): raw = ds.features["label"].names[raw]
-            norm = normalize_name(raw)
-            if norm in class_map:
-                img_bytes = s["image"].get("bytes")
-                if img_bytes: pool[class_map[norm]].append(img_bytes)
+    # 1. Lấy danh sách ảnh đã tách nền sẵn từ folder của bạn
+    if PROCESSED_DIR.exists() and any(PROCESSED_DIR.iterdir()):
+        pool = get_processed_pool()
+        valid_ids = set(class_map.values())
+        pool = {k: v for k, v in pool.items() if k in valid_ids}
+    else:
+        pool = load_hf_pool(class_map)
+        pool = load_external_dataset(pool, class_map)
+        pool = preprocess_pool(pool)
+        valid_ids = set(class_map.values())
+        pool = {k: v for k, v in pool.items() if k in valid_ids and len(v) > 0}
 
-    # Load External
-    if EXTERNAL_PATH.exists():
-        for folder in EXTERNAL_PATH.iterdir():
-            if not folder.is_dir(): continue
-            norm = normalize_name(folder.name)
-            if norm in class_map:
-                for img_p in folder.glob("*.*"):
-                    with open(img_p, "rb") as f: pool[class_map[norm]].append(f.read())
-
-    # 2. Tiền xử lý Cache (Chỉ chạy 1 lần)
-    pool = {k: v for k, v in pool.items() if len(v) > 0}
-    cached_pool = preprocess_pool(pool)
+    for cid in pool:
+        if len(pool[cid]) > MAX_PER_CLASS:
+            pool[cid] = random.sample(pool[cid], MAX_PER_CLASS)
     
-    # 3. Tạo Dataset
+    if not pool:
+        print("⚠ Thư mục processed_ingredients trống hoặc không tồn tại!")
+        return
+    
+    print("\n📊 Final usable classes:")
+    for cid, imgs in pool.items():
+        print(f"Class {cid}: {len(imgs)} images")
+
+    print(f"Usable classes: {len(pool)}")
+
     for split, target in SPLITS.items():
-        print(f"--- Generating {split} ({target} images) ---")
-        img_dir, lbl_dir = OUT_ROOT/split/"images", OUT_ROOT/split/"labels"
+        print(f"--- Starting Split: {split} ---")
+        
+        split_counts = {
+            "single": defaultdict(int),
+            "medium": defaultdict(int),
+            "dense": defaultdict(int)
+        }
+
+        img_dir = OUT_ROOT / split / "images"
+        lbl_dir = OUT_ROOT / split / "labels"
         img_dir.mkdir(parents=True, exist_ok=True)
         lbl_dir.mkdir(parents=True, exist_ok=True)
 
-        # Counter để cân bằng rare class
-        global_counts = defaultdict(int)
-        
-        for img_idx in tqdm(range(target)):
+        existing_files = list(img_dir.glob("*.jpg"))
+        img_idx = len(existing_files)
+        STEP = 500 
+
+        gc_counter = 0
+        while img_idx < target:
+            if img_idx > 0 and img_idx % STEP == 0:
+                print(f"   🚀 Tiến độ: [{img_idx}/{target}] - Split: {split}")
+                
             size = random.randint(CANVAS_MIN, CANVAS_MAX)
-            # Load background
-            bgs = list(BACKGROUND_DIR.glob("*.*"))
-            if bgs and random.random() > 0.15:
-                bg = cv2.imread(str(random.choice(bgs)))
-                bg = cv2.resize(bg, (size, size))
+            canvas = load_random_background(size) if random.random() > 0.2 else np.ones((size, size, 3), dtype=np.uint8) * 255
+
+            boxes, labels = [], []
+            scene = sample_scene_type()
+            if scene == "single":
+                cluster_center = (
+                    random.randint(int(size * 0.3), int(size * 0.7)),
+                    random.randint(int(size * 0.3), int(size * 0.7))
+                    )
             else:
-                bg = np.ones((size, size, 3), dtype=np.uint8) * random.randint(200, 255)
-
-            canvas, boxes, labels = bg.copy(), [], []
-            scene = random.choices(list(SCENE_PROBS.keys()), weights=list(SCENE_PROBS.values()))[0]
-            cluster_center = (random.randint(int(size*0.2), int(size*0.8)), random.randint(int(size*0.2), int(size*0.8)))
-
-            num_ing = random.randint(*SCENE_TYPES[scene])
+                cluster_center = (
+                    random.randint(int(size * 0.3), int(size * 0.7)),
+                    random.randint(int(size * 0.3), int(size * 0.7))
+                )
             
-            # 🔥 Rare Class Priority Sampling
-            all_cids = list(cached_pool.keys())
-            # Trọng số nghịch đảo: class xuất hiện càng ít, xác suất được chọn càng cao
-            weights = [1.0 / (np.sqrt(global_counts[cid]) + 1.0) for cid in all_cids]
-            probs = np.array(weights) / sum(weights)
-            
-            selected_cids = np.random.choice(all_cids, size=min(num_ing, len(all_cids)), replace=False, p=probs)
+            min_i, max_i = SCENE_TYPES[scene]
+            valid_cids = [cid for cid in pool if len(pool[cid]) > 0]
+            num_ing = min(random.randint(min_i, max_i), len(valid_cids))
 
-            for cid in selected_cids:
-                img_path = random.choice(cached_pool[cid])
+            all_cids = list(pool.keys())
+            weights = [1.0 / (split_counts[scene][cid] + 1) for cid in all_cids]
+            prob = np.array(weights) / sum(weights)
+            selected_classes = np.random.choice(all_cids, size=num_ing, replace=False, p=prob)
+
+            for cid in selected_classes:
+                # 🔥 SỬA LỖI TẠI ĐÂY:
+                # Lấy đường dẫn file từ pool
+                img_path = random.choice(pool[cid])
+                
+                # Đọc trực tiếp file PNG bằng cv2.imread thay vì imdecode
+                # Sử dụng cv2.IMREAD_UNCHANGED để giữ lại kênh Alpha (tách nền)
                 fg = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)
-                if fg is None: continue
                 
+                if fg is None: 
+                    print(f"⚠️ Failed to read: {img_path}")
+                    continue
+
+                # Augmentation vật thể (xoay, lật, v.v.)
                 fg = augment_fg(fg)
-                fg = smart_resize(fg, size, scene)
+
+                # Tính toán scale
+                h0, w0 = fg.shape[:2]
+                scale_map = {"single": 0.35, "medium": 0.18, "dense": 0.08}
+                max_scale_map = {"single": 0.9, "medium": 0.5, "dense": 0.3}
                 
+                max_scale = min(
+                    (size * max_scale_map[scene]) / w0,
+                    (size * max_scale_map[scene]) / h0
+                )
+                
+                min_scale = scale_map[scene]
+                if max_scale <= min_scale:
+                    continue
+
+                scale = random.uniform(min_scale, max_scale)
+                
+                fg = cv2.resize(fg, None, fx=scale, fy=scale)
+
                 box = place_object(canvas, fg, boxes, cluster_center)
                 if box:
-                    global_counts[cid] += 1
+                    split_counts[scene][cid] += 1
                     x1, y1, x2, y2 = box
                     labels.append(f"{cid} {(x1+x2)/2/size:.6f} {(y1+y2)/2/size:.6f} {(x2-x1)/size:.6f} {(y2-y1)/size:.6f}")
 
             if labels:
-                name = f"{split}_{img_idx:06d}"
+                name = f"{img_idx:06d}_{random.randint(0, 9999)}"
                 cv2.imwrite(str(img_dir / f"{name}.jpg"), canvas)
                 with open(lbl_dir / f"{name}.txt", "w") as f:
                     f.write("\n".join(labels))
-            
-            if img_idx % 1000 == 0: gc.collect()
+                img_idx += 1
+                
+            gc_counter += 1
+            if gc_counter % 100 == 0:
+                gc.collect()
+
+        print(f"✅ Finish {split}.")
+
 
 if __name__ == "__main__":
     main()

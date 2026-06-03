@@ -1,247 +1,869 @@
+# =========================================================
+# ADVANCED EDA FOR INGREDIENT DATASETS
+# Thesis-ready visualization version
+# =========================================================
+
 import os
-import yaml
+import cv2
+import imagehash
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
+import matplotlib.pyplot as plt
+
+from PIL import Image
+from io import BytesIO
+from tqdm import tqdm
+from pathlib import Path
+from datasets import load_dataset, Image as HFImage
 from collections import defaultdict
+from difflib import get_close_matches
 
-# ==============================
+# =========================================================
 # CONFIG
-# ==============================
-DATA_YAML = "data11.yaml"
-DATASET_ROOT = "dataset_v11"
-SPLITS = ["train", "val", "test"]
-OUTPUT_DIR = "eda_results_v11"
+# =========================================================
 
+HF_DATASETS = [
+    "Scuccorese/food-ingredients-dataset"
+]
+
+EXTERNAL_DATASET_ROOT = "external_dataset"
+
+OUTPUT_DIR = "eda_outputs"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+MAX_VISUAL_SAMPLES = 3000
 
-# ==============================
-# LOAD YAML
-# ==============================
-with open(DATA_YAML, "r", encoding="utf-8") as f:
-    data = yaml.safe_load(f)
+plt.style.use("ggplot")
 
-names = data["names"]
-id_to_name = {int(k): v for k, v in names.items()}
-num_classes = len(id_to_name)
+# =========================================================
+# CLASS NORMALIZATION
+# =========================================================
 
-print("=" * 60)
-print("DATASET BASIC INFO")
-print("=" * 60)
-print("Number of classes:", num_classes)
+def map_class(name):
 
+    name = name.lower().strip()
+    name = name.replace("-", "_").replace(" ", "_")
 
-# ==============================
-# INITIALIZE METRICS
-# ==============================
-instance_count = defaultdict(int)
-image_count = defaultdict(int)
-split_instance_count = {split: defaultdict(int) for split in SPLITS}
+    synonym_map = {
+        "capsicum": "bell_pepper",
+        "scallion": "green_onion",
+        "spring_onion": "green_onion",
+        "chilli": "chili",
+    }
 
-bbox_areas = []
-bbox_widths = []
-bbox_heights = []
-objects_per_image = []
+    return synonym_map.get(name, name)
 
-total_images = 0
-total_instances = 0
+# =========================================================
+# LOAD HUGGINGFACE DATASET
+# =========================================================
 
+print("=" * 70)
+print("LOADING HUGGINGFACE DATASETS")
+print("=" * 70)
 
-# ==============================
-# MAIN LOOP
-# ==============================
-for split in SPLITS:
-    label_dir = os.path.join(DATASET_ROOT, split, "labels")
+hf_records = []
 
-    if not os.path.exists(label_dir):
-        continue
+for hf in HF_DATASETS:
 
-    for fname in os.listdir(label_dir):
-        if not fname.endswith(".txt"):
+    print(f"\n📥 Loading {hf}")
+
+    ds = load_dataset(hf, split="train")
+
+    if "image" in ds.features:
+        ds = ds.cast_column("image", HFImage(decode=False))
+
+    for s in tqdm(ds):
+
+        # -------------------------------------------------
+        # GET LABEL
+        # -------------------------------------------------
+
+        if "label" in s and "label" in ds.features:
+            raw = ds.features["label"].names[s["label"]]
+
+        elif "ingredient" in s:
+            raw = s["ingredient"]
+
+        else:
             continue
 
-        total_images += 1
-        total_objects_in_image = 0
-        seen_classes = set()
+        if not raw:
+            continue
 
-        with open(os.path.join(label_dir, fname), "r") as f:
-            lines = f.readlines()
-            total_instances += len(lines)
+        raw = raw.lower().strip()
+        raw = raw.replace("-", "_").replace(" ", "_")
 
-            for line in lines:
-                parts = line.strip().split()
-                if len(parts) != 5:
-                    continue
+        norm = map_class(raw)
 
-                cls_id = int(parts[0])
-                w = float(parts[3])
-                h = float(parts[4])
+        # -------------------------------------------------
+        # GET IMAGE
+        # -------------------------------------------------
 
-                instance_count[cls_id] += 1
-                split_instance_count[split][cls_id] += 1
-                total_objects_in_image += 1
+        img_info = s.get("image", None)
 
-                if cls_id not in seen_classes:
-                    image_count[cls_id] += 1
-                    seen_classes.add(cls_id)
+        if not img_info:
+            continue
 
-                bbox_widths.append(w)
-                bbox_heights.append(h)
-                bbox_areas.append(w * h)
+        img_bytes = img_info.get("bytes", None)
 
-        objects_per_image.append(total_objects_in_image)
+        if not img_bytes:
+            continue
 
+        hf_records.append({
+            "dataset": hf,
+            "ingredient": norm,
+            "raw_label": raw,
+            "image_bytes": img_bytes
+        })
 
-# ==============================
-# OVERVIEW
-# ==============================
-print("\nTotal images:", total_images)
-print("Total instances:", total_instances)
-print("Average objects per image:", round(total_instances / total_images, 2))
+hf_df = pd.DataFrame(hf_records)
 
+print(f"\n✅ HF Images: {len(hf_df)}")
+print(f"✅ HF Classes: {hf_df['ingredient'].nunique()}")
 
-# ==============================
-# MISSING CLASS CHECK
-# ==============================
-missing_classes = set(id_to_name.keys()) - set(instance_count.keys())
-print("\nMissing classes:", len(missing_classes))
-for cls_id in sorted(missing_classes):
-    print(" -", id_to_name[cls_id])
+# =========================================================
+# LOAD EXTERNAL DATASET
+# =========================================================
 
+print("\n" + "=" * 70)
+print("LOADING EXTERNAL DATASET")
+print("=" * 70)
 
-# ==============================
-# CLASS DISTRIBUTION
-# ==============================
-counts = list(instance_count.values())
+external_records = []
 
-print("\nCLASS DISTRIBUTION")
-print("Max instances:", max(counts))
-print("Min instances:", min(counts))
-print("Median:", int(np.median(counts)))
-print("Imbalance ratio (max/min):", round(max(counts) / max(min(counts), 1), 2))
+for class_dir in Path(EXTERNAL_DATASET_ROOT).iterdir():
 
-rare_threshold = np.median(counts) * 0.3
-rare_classes = [id_to_name[c] for c, v in instance_count.items() if v < rare_threshold]
-
-print("\nRare classes (<30% median):", len(rare_classes))
-
-
-# ==============================
-# SAVE CLASS DISTRIBUTION CSV
-# ==============================
-df_class = pd.DataFrame({
-    "class_id": list(instance_count.keys()),
-    "class_name": [id_to_name[i] for i in instance_count.keys()],
-    "instances": list(instance_count.values()),
-    "images_containing_class": [image_count[i] for i in instance_count.keys()]
-})
-
-df_class = df_class.sort_values("instances", ascending=False)
-df_class.to_csv(os.path.join(OUTPUT_DIR, "class_distribution.csv"), index=False)
-
-
-# ==============================
-# HISTOGRAM: Instances per Class
-# ==============================
-plt.figure(figsize=(10, 6))
-plt.hist(counts, bins=50)
-plt.xlabel("Number of instances per class")
-plt.ylabel("Number of classes")
-plt.title("Instance Distribution (Linear)")
-plt.tight_layout()
-plt.savefig(os.path.join(OUTPUT_DIR, "instance_distribution_linear.png"))
-plt.close()
-
-plt.figure(figsize=(10, 6))
-plt.hist(counts, bins=50)
-plt.yscale("log")
-plt.xlabel("Number of instances per class")
-plt.ylabel("Number of classes (log)")
-plt.title("Instance Distribution (Log Scale)")
-plt.tight_layout()
-plt.savefig(os.path.join(OUTPUT_DIR, "instance_distribution_log.png"))
-plt.close()
-
-
-# ==============================
-# HISTOGRAM: Bounding Box Area
-# ==============================
-plt.figure(figsize=(10, 6))
-plt.hist(bbox_areas, bins=50)
-plt.xlabel("Bounding Box Area (normalized)")
-plt.ylabel("Frequency")
-plt.title("Bounding Box Area Distribution")
-plt.tight_layout()
-plt.savefig(os.path.join(OUTPUT_DIR, "bbox_area_distribution.png"))
-plt.close()
-
-
-# ==============================
-# HISTOGRAM: Width / Height
-# ==============================
-plt.figure(figsize=(10, 6))
-plt.hist(bbox_widths, bins=50)
-plt.xlabel("Bounding Box Width")
-plt.ylabel("Frequency")
-plt.title("Bounding Box Width Distribution")
-plt.tight_layout()
-plt.savefig(os.path.join(OUTPUT_DIR, "bbox_width_distribution.png"))
-plt.close()
-
-plt.figure(figsize=(10, 6))
-plt.hist(bbox_heights, bins=50)
-plt.xlabel("Bounding Box Height")
-plt.ylabel("Frequency")
-plt.title("Bounding Box Height Distribution")
-plt.tight_layout()
-plt.savefig(os.path.join(OUTPUT_DIR, "bbox_height_distribution.png"))
-plt.close()
-
-
-# ==============================
-# HISTOGRAM: Objects per Image
-# ==============================
-plt.figure(figsize=(10, 6))
-plt.hist(objects_per_image, bins=30)
-plt.xlabel("Objects per image")
-plt.ylabel("Number of images")
-plt.title("Object Density per Image")
-plt.tight_layout()
-plt.savefig(os.path.join(OUTPUT_DIR, "object_density.png"))
-plt.close()
-
-
-# ==============================
-# PER-SPLIT REPORT
-# ==============================
-for split in SPLITS:
-    split_counts = split_instance_count[split]
-    if not split_counts:
+    if not class_dir.is_dir():
         continue
 
-    split_values = list(split_counts.values())
+    ingredient = map_class(class_dir.name)
 
-    print(f"\n--- {split.upper()} SPLIT ---")
-    print("Images:", len(os.listdir(os.path.join(DATASET_ROOT, split, "labels"))))
-    print("Instances:", sum(split_values))
-    print("Max:", max(split_values))
-    print("Min:", min(split_values))
-    print("Median:", int(np.median(split_values)))
+    for img_path in class_dir.glob("*"):
 
+        if img_path.suffix.lower() not in [
+            ".jpg", ".jpeg", ".png", ".webp"
+        ]:
+            continue
 
-# ==============================
-# SAVE SUMMARY REPORT
-# ==============================
-with open(os.path.join(OUTPUT_DIR, "summary_report.txt"), "w") as f:
-    f.write("DATASET SUMMARY\n")
-    f.write("="*40 + "\n")
-    f.write(f"Total images: {total_images}\n")
-    f.write(f"Total instances: {total_instances}\n")
-    f.write(f"Average objects per image: {round(total_instances/total_images,2)}\n")
-    f.write(f"Missing classes: {len(missing_classes)}\n")
-    f.write(f"Rare classes (<30% median): {len(rare_classes)}\n")
+        external_records.append({
+            "ingredient": ingredient,
+            "image_path": str(img_path)
+        })
 
+external_df = pd.DataFrame(external_records)
 
-print("\nEDA Completed.")
-print("Results saved to:", OUTPUT_DIR)
+print(f"\n✅ External Images: {len(external_df)}")
+print(f"✅ External Classes: {external_df['ingredient'].nunique()}")
+
+# =========================================================
+# 4.1 DATASET OVERVIEW
+# =========================================================
+
+print("\n" + "=" * 70)
+print("4.1 DATASET OVERVIEW")
+print("=" * 70)
+
+overview_labels = [
+    "HF Images",
+    "HF Classes",
+    "External Images",
+    "External Classes"
+]
+
+overview_values = [
+    len(hf_df),
+    hf_df["ingredient"].nunique(),
+    len(external_df),
+    external_df["ingredient"].nunique()
+]
+
+plt.figure(figsize=(10, 6))
+
+bars = plt.bar(
+    overview_labels,
+    overview_values
+)
+
+plt.title(
+    "Dataset Overview Statistics",
+    fontsize=16,
+    fontweight="bold"
+)
+
+plt.ylabel("Count", fontsize=12)
+
+for bar in bars:
+    yval = bar.get_height()
+
+    plt.text(
+        bar.get_x() + bar.get_width()/2,
+        yval + 10,
+        int(yval),
+        ha='center',
+        fontsize=11
+    )
+
+plt.tight_layout()
+
+plt.savefig(
+    f"{OUTPUT_DIR}/dataset_overview.png",
+    dpi=300
+)
+
+plt.show()
+
+# =========================================================
+# 4.2 INGREDIENT DISTRIBUTION ANALYSIS
+# =========================================================
+
+print("\n" + "=" * 70)
+print("4.2 INGREDIENT DISTRIBUTION ANALYSIS")
+print("=" * 70)
+
+combined_labels = pd.concat([
+    hf_df["ingredient"],
+    external_df["ingredient"]
+])
+
+ingredient_counts = combined_labels.value_counts()
+
+# ---------------------------------------------------------
+# TOP 20 INGREDIENTS
+# ---------------------------------------------------------
+
+plt.figure(figsize=(16, 8))
+
+top20 = ingredient_counts.head(20)
+
+bars = plt.bar(
+    top20.index,
+    top20.values
+)
+
+plt.title(
+    "Top 20 Most Frequent Ingredient Classes",
+    fontsize=18,
+    fontweight="bold"
+)
+
+plt.xlabel("Ingredient Class", fontsize=13)
+plt.ylabel("Number of Images", fontsize=13)
+
+plt.xticks(rotation=45, ha="right")
+
+for bar in bars:
+    height = bar.get_height()
+
+    plt.text(
+        bar.get_x() + bar.get_width()/2,
+        height + 5,
+        int(height),
+        ha='center',
+        fontsize=9
+    )
+
+plt.tight_layout()
+
+plt.savefig(
+    f"{OUTPUT_DIR}/top20_ingredients.png",
+    dpi=300
+)
+
+plt.show()
+
+# ---------------------------------------------------------
+# LONG-TAIL DISTRIBUTION
+# ---------------------------------------------------------
+
+sorted_counts = ingredient_counts.sort_values(
+    ascending=False
+).values
+
+plt.figure(figsize=(14, 6))
+
+plt.plot(
+    range(len(sorted_counts)),
+    sorted_counts,
+    linewidth=2
+)
+
+plt.title(
+    "Long-tail Distribution of Ingredient Classes",
+    fontsize=17,
+    fontweight="bold"
+)
+
+plt.xlabel(
+    "Ingredient Rank",
+    fontsize=13
+)
+
+plt.ylabel(
+    "Number of Images",
+    fontsize=13
+)
+
+plt.grid(True)
+
+plt.tight_layout()
+
+plt.savefig(
+    f"{OUTPUT_DIR}/long_tail_distribution.png",
+    dpi=300
+)
+
+plt.show()
+
+# ---------------------------------------------------------
+# CLASS FREQUENCY HISTOGRAM
+# ---------------------------------------------------------
+
+plt.figure(figsize=(12, 6))
+
+plt.hist(
+    sorted_counts,
+    bins=50
+)
+
+plt.title(
+    "Ingredient Class Frequency Histogram",
+    fontsize=17,
+    fontweight="bold"
+)
+
+plt.xlabel(
+    "Images per Class",
+    fontsize=13
+)
+
+plt.ylabel(
+    "Number of Classes",
+    fontsize=13
+)
+
+plt.tight_layout()
+
+plt.savefig(
+    f"{OUTPUT_DIR}/class_frequency_histogram.png",
+    dpi=300
+)
+
+plt.show()
+
+# =========================================================
+# 4.3 SEMANTIC LABEL NORMALIZATION
+# =========================================================
+
+print("\n" + "=" * 70)
+print("4.3 SEMANTIC LABEL NORMALIZATION")
+print("=" * 70)
+
+hf_labels = set(hf_df["raw_label"].unique())
+
+ext_labels = set([
+    x.lower().strip().replace("-", "_").replace(" ", "_")
+    for x in external_df["ingredient"].unique()
+])
+
+duplicate_labels = hf_labels.intersection(ext_labels)
+
+near_duplicates = []
+
+for label in hf_labels:
+
+    matches = get_close_matches(
+        label,
+        ext_labels,
+        n=5,
+        cutoff=0.8
+    )
+
+    for m in matches:
+
+        if label != m:
+
+            near_duplicates.append((label, m))
+
+print(f"✅ Exact duplicate labels: {len(duplicate_labels)}")
+print(f"✅ Near duplicate labels: {len(near_duplicates)}")
+
+# ---------------------------------------------------------
+# LABEL NORMALIZATION SUMMARY
+# ---------------------------------------------------------
+
+plt.figure(figsize=(8, 6))
+
+categories = [
+    "Exact Duplicates",
+    "Near Duplicates"
+]
+
+values = [
+    len(duplicate_labels),
+    len(near_duplicates)
+]
+
+bars = plt.bar(categories, values)
+
+plt.title(
+    "Semantic Label Normalization Analysis",
+    fontsize=16,
+    fontweight="bold"
+)
+
+plt.ylabel("Number of Labels", fontsize=12)
+
+for bar in bars:
+
+    yval = bar.get_height()
+
+    plt.text(
+        bar.get_x() + bar.get_width()/2,
+        yval + 1,
+        int(yval),
+        ha='center',
+        fontsize=11
+    )
+
+plt.tight_layout()
+
+plt.savefig(
+    f"{OUTPUT_DIR}/semantic_normalization.png",
+    dpi=300
+)
+
+plt.show()
+
+# =========================================================
+# 4.4 IMAGE QUALITY ANALYSIS
+# =========================================================
+
+print("\n" + "=" * 70)
+print("4.4 IMAGE QUALITY ANALYSIS")
+print("=" * 70)
+
+widths = []
+heights = []
+aspect_ratios = []
+
+corrupted_files = 0
+
+# ---------------------------------------------------------
+# HUGGINGFACE IMAGES
+# ---------------------------------------------------------
+
+for img_bytes in tqdm(hf_df["image_bytes"]):
+
+    try:
+
+        img = Image.open(BytesIO(img_bytes))
+
+        w, h = img.size
+
+        widths.append(w)
+        heights.append(h)
+
+        aspect_ratios.append(w / h)
+
+    except:
+        corrupted_files += 1
+
+# ---------------------------------------------------------
+# EXTERNAL IMAGES
+# ---------------------------------------------------------
+
+for path in tqdm(external_df["image_path"]):
+
+    try:
+
+        img = Image.open(path)
+
+        w, h = img.size
+
+        widths.append(w)
+        heights.append(h)
+
+        aspect_ratios.append(w / h)
+
+    except:
+        corrupted_files += 1
+
+print(f"⚠️ Corrupted files: {corrupted_files}")
+
+# ---------------------------------------------------------
+# RESOLUTION DISTRIBUTION
+# ---------------------------------------------------------
+
+plt.figure(figsize=(10, 8))
+
+plt.scatter(
+    widths,
+    heights,
+    alpha=0.3
+)
+
+plt.title(
+    "Image Resolution Distribution",
+    fontsize=17,
+    fontweight="bold"
+)
+
+plt.xlabel(
+    "Image Width",
+    fontsize=13
+)
+
+plt.ylabel(
+    "Image Height",
+    fontsize=13
+)
+
+plt.tight_layout()
+
+plt.savefig(
+    f"{OUTPUT_DIR}/resolution_distribution.png",
+    dpi=300
+)
+
+plt.show()
+
+# ---------------------------------------------------------
+# ASPECT RATIO DISTRIBUTION
+# ---------------------------------------------------------
+
+plt.figure(figsize=(12, 6))
+
+plt.hist(
+    aspect_ratios,
+    bins=50
+)
+
+plt.title(
+    "Aspect Ratio Distribution",
+    fontsize=17,
+    fontweight="bold"
+)
+
+plt.xlabel(
+    "Aspect Ratio (Width / Height)",
+    fontsize=13
+)
+
+plt.ylabel(
+    "Number of Images",
+    fontsize=13
+)
+
+plt.tight_layout()
+
+plt.savefig(
+    f"{OUTPUT_DIR}/aspect_ratio_distribution.png",
+    dpi=300
+)
+
+plt.show()
+
+# ---------------------------------------------------------
+# CORRUPTED FILES
+# ---------------------------------------------------------
+
+plt.figure(figsize=(6, 6))
+
+labels = [
+    "Valid Images",
+    "Corrupted Images"
+]
+
+values = [
+    len(widths),
+    corrupted_files
+]
+
+plt.pie(
+    values,
+    labels=labels,
+    autopct='%1.2f%%'
+)
+
+plt.title(
+    "Corrupted File Analysis",
+    fontsize=16,
+    fontweight="bold"
+)
+
+plt.tight_layout()
+
+plt.savefig(
+    f"{OUTPUT_DIR}/corrupted_files_analysis.png",
+    dpi=300
+)
+
+plt.show()
+
+# =========================================================
+# 4.5 VISUAL DIVERSITY ANALYSIS
+# =========================================================
+
+print("\n" + "=" * 70)
+print("4.5 VISUAL DIVERSITY ANALYSIS")
+print("=" * 70)
+
+brightness_scores = []
+edge_scores = []
+
+hf_sample = hf_df.sample(
+    min(MAX_VISUAL_SAMPLES, len(hf_df))
+)
+
+for img_bytes in tqdm(hf_sample["image_bytes"]):
+
+    try:
+
+        pil_img = Image.open(
+            BytesIO(img_bytes)
+        ).convert("RGB")
+
+        img = np.array(pil_img)
+
+        gray = cv2.cvtColor(
+            img,
+            cv2.COLOR_RGB2GRAY
+        )
+
+        # -------------------------------------------------
+        # LIGHTING ANALYSIS
+        # -------------------------------------------------
+
+        brightness = gray.mean()
+
+        brightness_scores.append(brightness)
+
+        # -------------------------------------------------
+        # BACKGROUND COMPLEXITY
+        # -------------------------------------------------
+
+        edges = cv2.Canny(gray, 100, 200)
+
+        edge_density = edges.mean()
+
+        edge_scores.append(edge_density)
+
+    except:
+        continue
+
+# ---------------------------------------------------------
+# LIGHTING DISTRIBUTION
+# ---------------------------------------------------------
+
+plt.figure(figsize=(12, 6))
+
+plt.hist(
+    brightness_scores,
+    bins=50
+)
+
+plt.title(
+    "Lighting Condition Distribution",
+    fontsize=17,
+    fontweight="bold"
+)
+
+plt.xlabel(
+    "Average Brightness",
+    fontsize=13
+)
+
+plt.ylabel(
+    "Number of Images",
+    fontsize=13
+)
+
+plt.tight_layout()
+
+plt.savefig(
+    f"{OUTPUT_DIR}/lighting_distribution.png",
+    dpi=300
+)
+
+plt.show()
+
+# ---------------------------------------------------------
+# BACKGROUND COMPLEXITY
+# ---------------------------------------------------------
+
+plt.figure(figsize=(12, 6))
+
+plt.hist(
+    edge_scores,
+    bins=50
+)
+
+plt.title(
+    "Background Complexity Distribution",
+    fontsize=17,
+    fontweight="bold"
+)
+
+plt.xlabel(
+    "Edge Density",
+    fontsize=13
+)
+
+plt.ylabel(
+    "Number of Images",
+    fontsize=13
+)
+
+plt.tight_layout()
+
+plt.savefig(
+    f"{OUTPUT_DIR}/background_complexity.png",
+    dpi=300
+)
+
+plt.show()
+
+# =========================================================
+# DUPLICATE IMAGE DETECTION
+# =========================================================
+
+print("\n" + "=" * 70)
+print("DUPLICATE IMAGE DETECTION")
+print("=" * 70)
+
+hashes = defaultdict(list)
+
+sample_for_hash = hf_df.sample(
+    min(2000, len(hf_df))
+)
+
+for idx, row in tqdm(sample_for_hash.iterrows()):
+
+    try:
+
+        img = Image.open(
+            BytesIO(row["image_bytes"])
+        )
+
+        phash = str(
+            imagehash.phash(img)
+        )
+
+        hashes[phash].append(idx)
+
+    except:
+        continue
+
+duplicate_count = 0
+
+for h, ids in hashes.items():
+
+    if len(ids) > 1:
+        duplicate_count += len(ids)
+
+# ---------------------------------------------------------
+# DUPLICATE IMAGE VISUALIZATION
+# ---------------------------------------------------------
+
+plt.figure(figsize=(6, 6))
+
+labels = [
+    "Unique Images",
+    "Potential Duplicates"
+]
+
+values = [
+    len(sample_for_hash) - duplicate_count,
+    duplicate_count
+]
+
+plt.pie(
+    values,
+    labels=labels,
+    autopct='%1.2f%%'
+)
+
+plt.title(
+    "Duplicate Image Detection",
+    fontsize=16,
+    fontweight="bold"
+)
+
+plt.tight_layout()
+
+plt.savefig(
+    f"{OUTPUT_DIR}/duplicate_detection.png",
+    dpi=300
+)
+
+plt.show()
+
+# =========================================================
+# 4.6 FINAL DATASET COMPOSITION
+# =========================================================
+
+print("\n" + "=" * 70)
+print("4.6 FINAL DATASET COMPOSITION")
+print("=" * 70)
+
+merged_classes = set(
+    hf_df["ingredient"]
+).union(
+    set(external_df["ingredient"])
+)
+
+final_labels = [
+    "HF Images",
+    "External Images",
+    "Merged Images",
+    "Final Classes"
+]
+
+final_values = [
+    len(hf_df),
+    len(external_df),
+    len(hf_df) + len(external_df),
+    len(merged_classes)
+]
+
+plt.figure(figsize=(12, 6))
+
+bars = plt.bar(
+    final_labels,
+    final_values
+)
+
+plt.title(
+    "Final Dataset Composition",
+    fontsize=18,
+    fontweight="bold"
+)
+
+plt.ylabel(
+    "Count",
+    fontsize=13
+)
+
+for bar in bars:
+
+    height = bar.get_height()
+
+    plt.text(
+        bar.get_x() + bar.get_width()/2,
+        height + 10,
+        int(height),
+        ha='center',
+        fontsize=11
+    )
+
+plt.tight_layout()
+
+plt.savefig(
+    f"{OUTPUT_DIR}/final_dataset_composition.png",
+    dpi=300
+)
+
+plt.show()
+
+print("\n✅ EDA COMPLETED")
+print(f"📁 Graphs saved to: {OUTPUT_DIR}")

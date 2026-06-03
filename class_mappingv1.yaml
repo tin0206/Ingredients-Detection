@@ -1,0 +1,140 @@
+collard greens: collard_green
+mustard greens: mustard_green
+swiss chard: swiss_chard
+bok choy: bok_choy
+sweet potato: sweet_potato
+brussels sprouts: brussels_sprout
+savoy cabbage: savoy_cabbage
+ramps: ramp
+green onion: green_onion
+chard stalk: chard_stalk
+broccoli stem: broccoli_stem
+bamboo shoots: bamboo_shoot
+lima beans: lima_bean
+cannellini beans: cannellini_bean
+fava beans: fava_bean
+guinea fowl: guinea_fowl
+wild boar: wild_boar
+goji berry: goji_berry
+passion fruit: passion_fruit
+dragon fruit: dragon_fruit
+black cherry: black_cherry
+white peach: white_peach
+sour cherry: sour_cherry
+black sapote: black_sapote
+canned corn: corn
+canned peas: peas
+canned green beans: green_bean
+canned artichoke hearts: artichoke_heart
+canned pumpkin: pumpkin
+canned olives: olives
+canned mango: mango
+canned fruit cocktail: fruit_cocktail
+canned lychee: lychee
+canned lima beans: lima_bean
+canned cannellini beans: cannellini_bean
+canned refried beans: refried_bean
+canned baked beans: baked_bean
+canned tuna: tuna
+canned salmon: salmon
+canned sardines: sardine
+canned mackerel: mackerel
+canned anchovies: anchovy
+canned clams: clam
+canned crab: crab
+canned oysters: oyster
+canned shrimp: shrimp
+canned trout: trout
+oats: oat
+cracked wheat: cracked_wheat
+wheat bran: wheat_bran
+corn grits: corn_grit
+olive oil: olive_oil
+vegetable oil: vegetable_oil
+canola oil: canola_oil
+sunflower oil: sunflower_oil
+coconut oil: coconut_oil
+avocado oil: avocado_oil
+sesame oil: sesame_oil
+peanut oil: peanut_oil
+grapeseed oil: grapeseed_oil
+flaxseed oil: flaxseed_oil
+jarred pickles: pickle
+jarred salsa: salsa
+jarred pasta sauce: pasta_sauce
+jarred olives: olives
+jarred artichokes: artichoke
+jarred capers: caper
+jarred sun-dried tomatoes: sun_dried_tomato
+jarred peppers: pepper
+jarred pesto: pesto
+jarred horseradish: horseradish
+flaky salt: flaky_salt
+glass_noodles: glass_noodle
+ginger_root: ginger
+
+cauliflower: cauliflower
+carrot: carrot
+garlic: garlic
+ginger: ginger
+mushroom: mushroom
+onion: onion
+potato: potato
+radish: radish
+tomato: tomato
+turnip: turnip
+okra__bhindi_: okra
+sajjyun__moringa_drumsticks_: okra
+
+palak__indian_spinach_: spinach
+palungo__nepali_spinach_: spinach
+bethu_ko_saag: spinach
+rayo_ko_saag: mustard_green
+tori_ko_saag: mustard_green
+onion_leaves: green_onion
+
+chili_pepper__khursani_: chili_pepper
+akabare_khursani: chili_pepper
+chili_powder: paprika
+coriander__dhaniya_: coriander
+cinnamon: cinnamon
+
+black_beans: black_bean
+green_peas: peas
+garden_peas: peas
+green_soyabean__hariyo_bhatmas_: soybean
+soyabean__bhatmas_: soybean
+red_beans: kidney_bean
+black_lentils: lentils
+green_lentils: lentils
+red_lentils: lentils
+yellow_lentils: lentils
+rahar_ko_daal: lentils
+
+beef: beef
+buff_meat: beef
+minced_meat: beef
+chicken: chicken
+mutton: mutton
+pork: pork
+fish: fish
+egg: egg
+
+rice__chamal_: rice
+beaten_rice__chiura_: rice
+noodle: pasta
+chowmein_noodles: pasta
+thukpa_noodles: pasta
+wheat: wheat
+
+# --- Nhóm Trái cây (Fruits) ---
+apple: apple
+avocado: avocado
+banana: banana
+orange: orange
+papaya: papaya
+pear: pear
+strawberry: strawberry
+lemon__nimbu_: lemon
+lime__kagati_: lime
+jack_fruit: jackfruit

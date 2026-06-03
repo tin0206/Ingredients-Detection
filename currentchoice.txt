@@ -1,4 +1,10 @@
 yolo11s: runs/detect/train5/weights/best.pt
 yolo26s: runs/detect/train8/weights/best.pt
 yolo26n: runs/detect/train19/weights/best.pt
-yolo26s_new: runs/detect/train10/weights/best.pt (current choice)
+yolo26s_new: runs/detect/train10/weights/best.pt
+yolo26s_150epochs: runs/detect/train13/weights/best.pt (current choice)
+rtdetrl_150epochs: runs/detect/train-2/weights/best.pt
+
+#FINAL
+rtdetrl_150epochs: runs/detect/train/weights/best.pt
+yolo26s_150epochs: runs/detect/train-4/weights/best.pt

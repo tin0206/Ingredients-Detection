@@ -1,39 +1,74 @@
 import os
-from collections import Counter
 import yaml
 from pathlib import Path
+from collections import defaultdict
 
-def check_distribution(label_dir, yaml_path):
-    # Load tên class từ file yaml
-    with open(yaml_path, 'r', encoding='utf-8') as f:
-        data = yaml.safe_load(f)
-        class_names = data['names']
+# ================= CONFIG =================
+DATA_YAML = "data.yaml"
+DATASET_ROOT = Path("dataset")
+SPLITS = ["train", "val", "test"]
+OUTPUT_LOG = "dataset_distribution_report.txt"
+# ==========================================
 
-    label_files = list(Path(label_dir).glob('*.txt'))
-    stats = Counter()
+def log_distribution():
+    # 1. Load tên class từ data.yaml
+    if not Path(DATA_YAML).exists():
+        print(f"❌ Không tìm thấy file {DATA_YAML}")
+        return
+        
+    with open(DATA_YAML, "r", encoding="utf-8") as f:
+        data_config = yaml.safe_load(f)
+        id_to_name = {int(k): v for k, v in data_config["names"].items()}
 
-    print(f"Scanning {len(label_files)} label files...")
+    report_lines = []
+    report_lines.append("==========================================")
+    report_lines.append("   DATASET CLASS DISTRIBUTION REPORT")
+    report_lines.append("==========================================\n")
+
+    # 2. Duyệt qua từng split để đếm
+    for split in SPLITS:
+        label_dir = DATASET_ROOT / split / "labels"
+        if not label_dir.exists():
+            continue
+
+        counts = defaultdict(int)
+        label_files = list(label_dir.glob("*.txt"))
+        
+        for lbl in label_files:
+            with open(lbl, "r") as f:
+                for line in f:
+                    parts = line.split()
+                    if parts:
+                        class_id = int(parts[0])
+                        counts[class_id] += 1
+
+        # 3. Ghi kết quả cho từng split vào danh sách dòng
+        report_lines.append(f"--- SPLIT: {split.upper()} ---")
+        report_lines.append(f"Tổng số ảnh: {len(label_files)}")
+        report_lines.append(f"Tổng số vật thể (instances): {sum(counts.values())}")
+        report_lines.append(f"{'ID':<5} | {'Class Name':<25} | {'Count':<8}")
+        report_lines.append("-" * 45)
+
+        # Sắp xếp theo ID hoặc theo số lượng (ở đây sắp theo ID)
+        sorted_ids = sorted(counts.keys())
+        for cid in sorted_ids:
+            name = id_to_name.get(cid, "Unknown")
+            count = counts[cid]
+            report_lines.append(f"{cid:<5} | {name:<25} | {count:<8}")
+        
+        # Thống kê nhanh
+        if counts:
+            sorted_counts = sorted(counts.items(), key=lambda x: x[1], reverse=True)
+            report_lines.append(f"\nTop 3 nhiều nhất: {[(id_to_name.get(x[0]), x[1]) for x in sorted_counts[:3]]}")
+            report_lines.append(f"Top 3 ít nhất: {[(id_to_name.get(x[0]), x[1]) for x in sorted_counts[-3:]]}")
+        
+        report_lines.append("\n" + "="*45 + "\n")
+
+    # 4. Xuất ra file .txt
+    with open(OUTPUT_LOG, "w", encoding="utf-8") as f:
+        f.write("\n".join(report_lines))
     
-    for lbl in label_files:
-        with open(lbl, 'r') as f:
-            for line in f:
-                class_id = int(line.split()[0])
-                stats[class_id] += 1
+    print(f"✅ Đã lưu báo cáo phân phối tại: {OUTPUT_LOG}")
 
-    # In kết quả theo thứ tự số lượng giảm dần
-    print(f"{'ID':<5} | {'Class Name':<25} | {'Count':<10}")
-    print("-" * 45)
-    
-    for cid, count in stats.most_common():
-        name = class_names.get(cid, "Unknown")
-        print(f"{cid:<5} | {name:<25} | {count:<10}")
-
-    # Kiểm tra xem có class nào bị 0 instance không
-    missing = set(class_names.keys()) - set(stats.keys())
-    if missing:
-        print(f"\n⚠ CẢNH BÁO: Có {len(missing)} class không có dữ liệu:")
-        for m in missing:
-            print(f"- {m}: {class_names[m]}")
-
-# Chạy thử cho tập train
-check_distribution("dataset_v12/train/labels", "data12.yaml")
+if __name__ == "__main__":
+    log_distribution()

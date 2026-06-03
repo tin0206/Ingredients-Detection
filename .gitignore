@@ -3,14 +3,21 @@ dataset_roboflow_v1/
 roboflow_dataset1/
 roboflow_dataset2/
 dataset_v6/
+dataset_v1/
 dataset_v11/
 dataset_v12/
+dataset_66k/
 runs/detect
 runs/
 output_faster_rcnn/
 output_retinanet/
 output_yolo26s/
+clean_output/
 processed_ingredients/
+processed_ingredients_v1/
+processed_ingredients_v2/
+raw_ingredients/
+raw_ingredients_v2/
 *.pt
 
 # Ignore virtual environment

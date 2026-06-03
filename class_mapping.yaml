@@ -1,140 +1,313 @@
-collard greens: collard_green
-mustard greens: mustard_green
-swiss chard: swiss_chard
-bok choy: bok_choy
-sweet potato: sweet_potato
-brussels sprouts: brussels_sprout
-savoy cabbage: savoy_cabbage
-ramps: ramp
-green onion: green_onion
-chard stalk: chard_stalk
-broccoli stem: broccoli_stem
-bamboo shoots: bamboo_shoot
-lima beans: lima_bean
-cannellini beans: cannellini_bean
-fava beans: fava_bean
-guinea fowl: guinea_fowl
-wild boar: wild_boar
-goji berry: goji_berry
-passion fruit: passion_fruit
-dragon fruit: dragon_fruit
-black cherry: black_cherry
-white peach: white_peach
-sour cherry: sour_cherry
-black sapote: black_sapote
-canned corn: corn
-canned peas: peas
-canned green beans: green_bean
-canned artichoke hearts: artichoke_heart
-canned pumpkin: pumpkin
-canned olives: olives
-canned mango: mango
-canned fruit cocktail: fruit_cocktail
-canned lychee: lychee
-canned lima beans: lima_bean
-canned cannellini beans: cannellini_bean
-canned refried beans: refried_bean
-canned baked beans: baked_bean
-canned tuna: tuna
-canned salmon: salmon
-canned sardines: sardine
-canned mackerel: mackerel
-canned anchovies: anchovy
-canned clams: clam
-canned crab: crab
-canned oysters: oyster
-canned shrimp: shrimp
-canned trout: trout
-oats: oat
-cracked wheat: cracked_wheat
-wheat bran: wheat_bran
-corn grits: corn_grit
-olive oil: olive_oil
-vegetable oil: vegetable_oil
-canola oil: canola_oil
-sunflower oil: sunflower_oil
-coconut oil: coconut_oil
-avocado oil: avocado_oil
-sesame oil: sesame_oil
-peanut oil: peanut_oil
-grapeseed oil: grapeseed_oil
-flaxseed oil: flaxseed_oil
-jarred pickles: pickle
-jarred salsa: salsa
-jarred pasta sauce: pasta_sauce
-jarred olives: olives
-jarred artichokes: artichoke
-jarred capers: caper
-jarred sun-dried tomatoes: sun_dried_tomato
-jarred peppers: pepper
-jarred pesto: pesto
-jarred horseradish: horseradish
-flaky salt: flaky_salt
-glass_noodles: glass_noodle
-ginger_root: ginger
-
-cauliflower: cauliflower
-carrot: carrot
-garlic: garlic
-ginger: ginger
-mushroom: mushroom
-onion: onion
-potato: potato
-radish: radish
-tomato: tomato
-turnip: turnip
-okra__bhindi_: okra
-sajjyun__moringa_drumsticks_: okra
-
-palak__indian_spinach_: spinach
-palungo__nepali_spinach_: spinach
-bethu_ko_saag: spinach
-rayo_ko_saag: mustard_green
-tori_ko_saag: mustard_green
-onion_leaves: green_onion
-
-chili_pepper__khursani_: chili_pepper
-akabare_khursani: chili_pepper
-chili_powder: paprika
-coriander__dhaniya_: coriander
-cinnamon: cinnamon
-
-black_beans: black_bean
-green_peas: peas
-garden_peas: peas
-green_soyabean__hariyo_bhatmas_: soybean
-soyabean__bhatmas_: soybean
-red_beans: kidney_bean
-black_lentils: lentils
-green_lentils: lentils
-red_lentils: lentils
-yellow_lentils: lentils
-rahar_ko_daal: lentils
-
-beef: beef
-buff_meat: beef
-minced_meat: beef
-chicken: chicken
-mutton: mutton
-pork: pork
-fish: fish
-egg: egg
-
-rice__chamal_: rice
-beaten_rice__chiura_: rice
-noodle: pasta
-chowmein_noodles: pasta
-thukpa_noodles: pasta
-wheat: wheat
-
-# --- Nhóm Trái cây (Fruits) ---
-apple: apple
+adzuki_beans: bean
+all_purpose_flour: flour
+allspice: allspice
+almond_flour: flour
+amaranth: amaranth
+apricot: apricot
+arugula: arugula
+asparagus: asparagus
 avocado: avocado
+avocado_oil: oil
+bacon: bacon
+bamboo_shoots: bamboo_shoot
 banana: banana
+barley: grain
+beef: beef
+beet: beet
+beluga_lentils: lentils
+bergamot: bergamot
+black_beans: bean
+black_cherry: cherry
+black_eyed_peas: peas
+black_lentils: lentils
+black_olives: olives
+black_salt: salt
+blackberry: berry
+blueberry: berry
+bok_choy: bok_choy
+boysenberry: berry
+bread: bread
+bread_flour: flour
+breadfruit: breadfruit
+broccoli: broccoli
+broccoli_stem: broccoli
+brown_lentils: lentils
+brown_sugar: sugar
+brussels_sprouts: brussels_sprout
+butter: butter
+cabbage: cabbage
+cake_flour: flour
+cane_sugar: sugar
+canned_anchovies: anchovy
+canned_apples: apple
+canned_apricots: apricot
+canned_baked_beans: baked_bean
+canned_beets: beet
+canned_black_beans: bean
+canned_cannellini_beans: bean
+canned_carrots: carrot
+canned_cherries: cherry
+canned_chickpeas: chickpea
+canned_clams: clam
+canned_corn: corn
+canned_crab: crab
+canned_fruit_cocktail: fruit_cocktail
+canned_green_beans: green_bean
+canned_kidney_beans: bean
+canned_lima_beans: bean
+canned_lychee: lychee
+canned_mackerel: mackerel
+canned_mandarin_oranges: mandarin
+canned_mango: mango
+canned_mushrooms: mushroom
+canned_navy_beans: bean
+canned_olives: olives
+canned_oysters: oyster
+canned_peaches: peach
+canned_pears: pear
+canned_peas: peas
+canned_pineapples: pineapple
+canned_pinto_beans: bean
+canned_pumpkin: pumpkin
+canned_refried_beans: bean
+canned_salmon: salmon
+canned_sardines: sardine
+canned_shrimp: shrimp
+canned_tomatoes: tomato
+canned_trout: trout
+canned_tuna: tuna
+cannellini_beans: bean
+canola_oil: oil
+cardamom: cardamom
+carrot: carrot
+castelvetrano_olives: olives
+cauliflower: cauliflower
+celeriac: celeriac
+celery: celery
+celtic_salt: salt
+cerignola_olives: olives
+cheese: cheese
+cherimoya: cherimoya
+cherry: cherry
+chia: chia
+chicken: chicken
+chicken_breast: chicken
+chicken_thigh: chicken
+chickpeas: chickpea
+chili_pepper: chili_pepper
+chili_sauce: chili_sauce
+chive: chive
+cinnamon: cinnamon
+clove: clove
+coconut: coconut
+coconut_flour: flour
+coconut_oil: oil
+coconut_sugar: sugar
+cod: cod
+coffee: coffee
+collard_greens: collard_green
+coriander: coriander
+corn: corn
+corn_grits: grain
+couscous: couscous
+crab: crab
+cracked_wheat: grain
+cranberry: berry
+cucumber: cucumber
+cumin: cumin
+daikon: daikon
+date_sugar: sugar
+demerara_sugar: sugar
+dragon_fruit: dragon_fruit
+duck: duck
+dumpling_wrapper: dumpling_wrapper
+durian: durian
+egg: egg
+einkorn: grain
+elderberry: berry
+elephant_garlic: garlic
+emmer: grain
+farfalle: pasta
+farro: grain
+fava_beans: bean
+fennel: fennel
+fettuccine: pasta
+field_peas: peas
+fish_sauce: fish_sauce
+flaky_salt: flaky_salt
+flaxseed_oil: oil
+freekeh: grain
+french_lentils: lentils
+fusilli: pasta
+gaeta_olives: olives
+garlic: garlic
+garlic_bulb: garlic
+ginger: ginger
+ginger_root: ginger
+glass_noodles: glass_noodle
+gluten_free_flour: flour
+goat: goat
+goji_berry: berry
+golden_lentils: lentils
+goose: goose
+grapefruit: grapefruit
+grapeseed_oil: oil
+green_lentils: lentils
+green_olives: olives
+green_onion: green_onion
+green_peas: peas
+guava: guava
+haddock: haddock
+ham: ham
+huckleberry: berry
+iodized_salt: salt
+jackfruit: jackfruit
+jarred_artichokes: artichoke
+jarred_capers: caper
+jarred_horseradish: horseradish
+jarred_olives: olives
+jarred_pasta_sauce: pasta_sauce
+jarred_peppers: pepper
+jarred_pesto: pesto
+jarred_pickles: pickle
+jarred_sun_dried_tomatoes: sun_dried_tomato
+kalamata_olives: olives
+kale: kale
+kamut: grain
+kidney_beans: bean
+kiwi: kiwi
+kohlrabi: kohlrabi
+kosher_salt: salt
+kumquat: kumquat
+lamb: lamb
+lasagna: lasagna
+leek: leek
+lemon: lemon
+lemongrass: lemongrass
+lettuce: lettuce
+ligurian_olives: olives
+lima_beans: bean
+lime: lime
+linguine: pasta
+lobster: lobster
+lychee: lychee
+macaroni: pasta
+mackerel: mackerel
+mandarin: mandarin
+mango: mango
+manzanilla_olives: olives
+milk: milk
+millet: grain
+mulberry: berry
+mung_beans: bean
+muscovado_sugar: sugar
+mushroom: mushroom
+mustard_greens: mustard_green
+mutton: mutton
+navy_beans: bean
+nectarine: nectarine
+nicoise_olives: olives
+nutmeg: nutmeg
+oat_flour: flour
+oats: grain
+octopus: octopus
+olive_oil: oil
+onion: onion
 orange: orange
+orange_lentils: lentils
 papaya: papaya
-pear: pear
+paprika: paprika
+parsnip: parsnip
+passion_fruit: passion_fruit
+pasta: pasta
+peach: peach
+peanut_oil: oil
+pearl_onion: onion
+penne: pasta
+picholine_olives: olives
+pickling_salt: salt
+pigeon_peas: peas
+pineapple: pineapple
+pink_salt: salt
+pinto_beans: bean
+plum: plum
+pluot: pluot
+polenta: grain
+pomelo: pomelo
+pork: pork
+potato: potato
+powdered_sugar: sugar
+quinoa: grain
+rabbit: rabbit
+radicchio: radicchio
+radish: radish
+ramps: ramp
+raspberry: berry
+raw_sugar: sugar
+red_lentils: lentils
+rhubarb: rhubarb
+rice: rice
+rigatoni: pasta
+romaine: romaine
+rotini: pasta
+rutabaga: rutabaga
+rye_flour: flour
+salmon: salmon
+santol: santol
+sapote: sapote
+sausage: sausage
+savoy_cabbage: savoy_cabbage
+scallion: green_onion
+scallop: scallop
+sea_salt: salt
+self_rising_flour: flour
+sesame_oil: oil
+shallot: shallot
+shrimp: shrimp
+smoked_salt: salt
+snap_peas: peas
+snow_peas: peas
+sorghum: grain
+sour_cherry: cherry
+soursop: soursop
+soybeans: soybean
+spaghetti: pasta
+spanish_pardina_lentils: lentils
+spelt: grain
+spinach: spinach
+split_peas: peas
+spring_onion: green_onion
+sprouted_adzuki_beans: bean
+sprouted_black_beans: bean
+sprouted_chickpeas: chickpea
+sprouted_green_peas: peas
+sprouted_kidney_beans: bean
+sprouted_lentils: lentils
+sprouted_mung_beans: bean
+sprouted_navy_beans: bean
+sprouted_pinto_beans: bean
+sprouted_soybeans: soybean
 strawberry: strawberry
-lemon__nimbu_: lemon
-lime__kagati_: lime
-jack_fruit: jackfruit
+sunflower_oil: oil
+sweet_potato: sweet_potato
+swiss_chard: swiss_chard
+table_salt: salt
+tangerine: tangerine
+teff: grain
+tuna: tuna
+turbinado_sugar: sugar
+turkey: turkey
+turmeric: turmeric
+turnip: turnip
+vegetable_oil: oil
+watercress: watercress
+wheat_bran: grain
+white_flour: flour
+white_peach: white_peach
+white_peas: peas
+white_rice: rice
+white_sugar: sugar
+whole_wheat_flour: flour
+yellow_lentils: lentils
+yellow_peas: peas
+yuzu: yuzu
