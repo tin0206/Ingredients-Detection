@@ -19,6 +19,7 @@ processed_ingredients_v2/
 raw_ingredients/
 raw_ingredients_v2/
 *.pt
+*.zip
 
 # Ignore virtual environment
 .venv/
