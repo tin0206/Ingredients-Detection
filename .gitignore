@@ -7,6 +7,10 @@ dataset_v1/
 dataset_v11/
 dataset_v12/
 dataset_66k/
+dataset_test_v1/
+dataset_test_v2/
+dataset_test_v3/
+dataset_test_v4/
 runs/detect
 runs/
 output_faster_rcnn/
@@ -18,8 +22,25 @@ processed_ingredients_v1/
 processed_ingredients_v2/
 raw_ingredients/
 raw_ingredients_v2/
+raw_ingredients_test_v2/
+processed_ingredients_test_v2
+dedup_pairs_results_1.0.csv
+classify_pass1_results_1.0.csv
+classify_pass2_verified_1.0.csv
+final_recipe_imgs/
+real_dataset/
+real_dataset_1000_imgs/
+temp/
+backgrounds/wood_cutting_board/*
 *.pt
 *.zip
+*.csv
+*.log
+availabel_ingredients.txt
+class_frequency.txt
+classes.txt
+confirmed_removals.txt
+missing_ingredients.txt
 
 # Ignore virtual environment
 .venv/

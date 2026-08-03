@@ -9,3 +9,8 @@ torchvision
 ultralytics
 onnxruntime
 tqdm
+streamlit
+streamlit-paste-button
+icrawler
+pandas
+rapidfuzz

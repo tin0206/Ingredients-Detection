@@ -11,13 +11,13 @@ HF_DATASETS = [
 ]
 
 EXTERNAL_PATH = "external_dataset"
-OUTPUT_YAML = "data.yaml"
-MAPPING_YAML = "class_mapping.yaml"
+OUTPUT_YAML = "data_test_v2.yaml"
+MAPPING_YAML = "class_mapping_test_v2.yaml"
 
-DATASET_ROOT = "dataset"
-TRAIN_PATH = "images/train"
-VAL_PATH = "images/val"
-TEST_PATH = "images/test"
+DATASET_ROOT = "dataset_test_v2"
+TRAIN_PATH = "train/images"
+VAL_PATH = "val/images"
+TEST_PATH = "test/images"
 
 # ===================== MERGE GROUP =====================
 MERGE_GROUPS = {
@@ -31,23 +31,15 @@ MERGE_GROUPS = {
     # ===== PASTA =====
     "pasta": [
         "spaghetti", "penne", "fusilli", "rigatoni",
-        "linguine", "fettuccine", "macaroni", "rotini", "farfalle"
+        "linguine", "fettuccine", "macaroni", "rotini", "farfalle", "lasagna"
     ],
-
-    # ===== GRAIN =====
-    "grain": [
-        "barley", "oat", "millet", "sorghum", "teff",
-        "spelt", "farro", "emmer", "einkorn", "corn_grit", "cracked_wheat", 
-        "freekeh", "polenta", "wheat_bran", "barley", "oat", "millet", 
-        "sorghum", "teff", "spelt", "quinoa", "einkorn", "emmer", "farro", "kamut"
     
-    ],
-
     # ===== BEAN =====
     "bean": [
         "black_bean", "kidney_bean", "navy_bean", "pinto_bean",
         "mung_bean", "adzuki_bean", "lima_bean",
-        "fava_bean", "cannellini_bean", "refried_bean"
+        "fava_bean", "cannellini_bean", "refried_bean", "soybean", "chickpea", "lentils", 
+        "baked_bean"
     ],
     
     # ===== CHICKEN =====
@@ -70,8 +62,80 @@ MERGE_GROUPS = {
     ],
     
     "berry": [
-        "blackberry", "blueberry", "cranberry", "raspberry", "elderberry", "huckleberry", "mulberry", "boysenberry", "goji_berry"
+        "blackberry", "blueberry", "cranberry", "raspberry", "elderberry", "huckleberry", "mulberry", "boysenberry", ""
     ],
+    
+    "peach": [
+        "peach", "nectarine", "white_peach"
+    ],
+    
+    "cabbage": [
+        "cabbage", "savoy_cabbage"
+    ],
+    
+    "lemon": [
+        "lemon", "yuzu", "bergamot"
+    ],
+    
+    "orange": [
+        "orange", "mandarin", "tangerine", "kumquat"
+    ],
+    
+    "pomelo": [
+        "grapefruit", "pomelo"
+    ],
+    
+    "onion": [
+        "onion", "shallot"
+    ],
+    
+    "green_onion": [
+        "chive", "leek"
+    ],
+    
+    "cabbage": [
+        "cabbage", "savoy_cabbage", "collard_green"
+    ],
+    
+    "bok_choy": [
+        "bok_choy", "mustard_green"
+    ],
+    
+    "spinach": [
+        "swiss_chard", "watercress", "spinach"
+    ],
+    
+    "lettuce": [
+        "romaine", "lettuce"
+    ],
+    
+    "radish": [
+        "daikon", "radish"
+    ],
+    
+    "turnip": [
+        "rutabaga", "celeriac", "turnip"
+    ],
+    
+    "carrot": [
+        "parsnip", "carrot"
+    ],
+
+    "whole_spice": [
+        "cardamom", "clove", "nutmeg", "pepper"
+    ],
+
+    "powder": [
+        "flour", "sugar", "salt", "paprika", "turmeric", "cumin", "allspice", "cinnamon"
+    ],
+    
+    "fish": [
+        "cod", "haddock", "mackerel", "sardine", "anchovy"
+    ],
+    
+    "salmon": [
+        "trout", "salmon"
+    ]
 }
 
 MERGE_LOOKUP = {}
@@ -84,7 +148,12 @@ REMOVE_CLASSES = {
     "caribou", "chard_stalk", "cornmeal", "elk", "deer", 
     "grouse", "guinea_fowl", "pawpaw",
     "partridge", "pheasant", "quail", "salsa", "squab",
-    "squirrel", "semolina", "wild_boar", "ostrich", "venison"
+    "squirrel", "semolina", "wild_boar", "ostrich", "venison", "flaky_salt", "sun_dried_tomato", "couscous",
+    "pluot", "mutton", "cherimoya", "sapote", "santol", "soursop", "breadfruit", "dragon_fruit", "jackfruit", "guava", "lychee",
+    "ramp", "amaranth", "fruit_cocktail", "tomato_sauce", "chili_sauce", "barley", "oat", "millet", "sorghum", "teff",
+    "spelt", "farro", "emmer", "einkorn", "corn_grit", "cracked_wheat", 
+    "freekeh", "polenta", "wheat_bran", "barley", "oat", "millet", "turkey", 
+    "sorghum", "teff", "spelt", "quinoa", "einkorn", "emmer", "farro", "kamut", "chia", "rhubarb"
 }
 
 # =========================

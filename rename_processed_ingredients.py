@@ -43,5 +43,5 @@ def rename_ingredients_final(root_dir):
         print(f"  ✅ Thành công! Đã đánh số lại {len(temp_files)} file.")
 
 if __name__ == "__main__":
-    TARGET_DIR = "processed_ingredients"
+    TARGET_DIR = "processed_ingredients_test_v2"
     rename_ingredients_final(TARGET_DIR)

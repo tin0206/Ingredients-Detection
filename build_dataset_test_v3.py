@@ -10,10 +10,10 @@ from rembg import remove, new_session
 from PIL import Image
 
 # ================= CONFIG =================
-DATA_YAML = "data_test_v2.yaml"
-CLASS_MAPPING_YAML = "class_mapping_test_v2.yaml"
+DATA_YAML = "data_test_v3.yaml"
+CLASS_MAPPING_YAML = "class_mapping_test_v3.yaml"
 
-OUT_ROOT = Path("dataset_test_v2")
+OUT_ROOT = Path("dataset_test_v3")
 BACKGROUND_DIR = Path("backgrounds")
 EXTERNAL_PATH = Path("external_dataset")
 PROCESSED_DIR = Path("processed_ingredients_test_v2")
@@ -503,8 +503,29 @@ def place_object(canvas, fg, boxes, cluster_center, layout_type="cluster"):
                     (1 - alpha) * canvas[y:y+h, x:x+w, c]
                 )
 
-            boxes.append(rect)
-            return rect
+            alpha = fg[:, :, 3] / 255.0
+
+            for c in range(3):
+                canvas[y:y+h, x:x+w, c] = (
+                    alpha * fg[:, :, c] +
+                    (1 - alpha) * canvas[y:y+h, x:x+w, c]
+                )
+
+            alpha_2d = fg[:, :, 3]
+            ys, xs = np.where(alpha_2d > 10)
+
+            if len(xs) == 0 or len(ys) == 0:
+                return None
+
+            tight_rect = (
+                x + int(xs.min()),
+                y + int(ys.min()),
+                x + int(xs.max()),
+                y + int(ys.max())
+            )
+
+            boxes.append(tight_rect)
+            return tight_rect
 
     return None
 

@@ -1,64 +1,42 @@
-import yaml
 from pathlib import Path
 
-DATA_YAML = "data.yaml"
-ALIAS_YAML = "class_alias.yaml"
-DATASET_ROOT = Path("dataset")  # train/valid/test
+ROOT = Path("real_dataset")
 
-# load canonical classes
-with open(DATA_YAML, "r", encoding="utf-8") as f:
-    data = yaml.safe_load(f)
+IMAGE_DIR = ROOT / "images"
+LABEL_DIR = ROOT / "labels"
 
-canonical_names = data["names"]
-canonical_id = {name: i for i, name in enumerate(canonical_names)}
+IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 
-# load alias map
-with open(ALIAS_YAML, "r", encoding="utf-8") as f:
-    alias_map = yaml.safe_load(f)
+# Lấy toàn bộ ảnh
+images = sorted(
+    [p for p in IMAGE_DIR.iterdir()
+     if p.suffix.lower() in IMAGE_EXTS]
+)
 
-# build reverse map: alias -> canonical
-alias_to_canonical = {}
-for canon, aliases in alias_map.items():
-    for a in aliases:
-        alias_to_canonical[a] = canon
+print(f"Found {len(images)} images")
 
-def remap_label_file(label_path):
-    new_lines = []
+# Rename tạm để tránh trùng tên
+for i, img in enumerate(images):
+    tmp = IMAGE_DIR / f"tmp_{i:06d}{img.suffix.lower()}"
+    img.rename(tmp)
 
-    with open(label_path, "r") as f:
-        for line in f:
-            parts = line.strip().split()
-            if not parts:
-                continue
+    label = LABEL_DIR / f"{img.stem}.txt"
+    if label.exists():
+        label.rename(LABEL_DIR / f"tmp_{i:06d}.txt")
 
-            old_id = int(parts[0])
-            bbox = parts[1:]
+# Rename chính thức
+tmp_images = sorted(IMAGE_DIR.glob("tmp_*"))
 
-            old_name = old_names[old_id]
+for idx, img in enumerate(tmp_images, start=1):
 
-            # map alias → canonical
-            if old_name in alias_to_canonical:
-                new_name = alias_to_canonical[old_name]
-            else:
-                new_name = old_name
+    new_img = IMAGE_DIR / f"{idx:06d}{img.suffix.lower()}"
+    img.rename(new_img)
 
-            if new_name not in canonical_id:
-                continue  # skip unknown
+    tmp_label = LABEL_DIR / f"{img.stem}.txt"
 
-            new_id = canonical_id[new_name]
-            new_lines.append(" ".join([str(new_id)] + bbox))
+    if tmp_label.exists():
+        tmp_label.rename(
+            LABEL_DIR / f"{idx:06d}.txt"
+        )
 
-    with open(label_path, "w") as f:
-        f.write("\n".join(new_lines))
-
-
-# load old names BEFORE cleanup
-with open("data_old.yaml", "r", encoding="utf-8") as f:
-    old_names = yaml.safe_load(f)["names"]
-
-for split in ["train", "valid", "test"]:
-    label_dir = DATASET_ROOT / split / "labels"
-    for label_file in label_dir.glob("*.txt"):
-        remap_label_file(label_file)
-
-print("✅ Labels remapped successfully")
+print("Done!")

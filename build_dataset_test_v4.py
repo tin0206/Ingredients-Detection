@@ -10,10 +10,10 @@ from rembg import remove, new_session
 from PIL import Image
 
 # ================= CONFIG =================
-DATA_YAML = "data_test_v2.yaml"
-CLASS_MAPPING_YAML = "class_mapping_test_v2.yaml"
+DATA_YAML = "data_test_v4.yaml"
+CLASS_MAPPING_YAML = "class_mapping_test_v4.yaml"
 
-OUT_ROOT = Path("dataset_test_v2")
+OUT_ROOT = Path("dataset_test_v4")
 BACKGROUND_DIR = Path("backgrounds")
 EXTERNAL_PATH = Path("external_dataset")
 PROCESSED_DIR = Path("processed_ingredients_test_v2")
@@ -336,6 +336,20 @@ def sample_scene_type():
             return k
     return "dense"
 
+def get_all_backgrounds():
+    exts = [".jpg", ".jpeg", ".png", ".webp", ".bmp"]
+    files = []
+
+    for p in BACKGROUND_DIR.rglob("*"):
+        if p.is_file() and p.suffix.lower() in exts:
+            files.append(p)
+
+    random.shuffle(files)
+    return files
+
+BG_FILES = get_all_backgrounds()
+BG_INDEX = 0
+
 
 # ---------- REMOVE BG ----------
 def remove_bg(img_bgr):
@@ -381,11 +395,16 @@ def augment_fg(fg):
 
 # ---------- LOAD RANDOM BACKGROUND ----------
 def load_random_background(size):
-    bgs = list(BACKGROUND_DIR.glob("*.*"))
-    if not bgs:
+    global BG_INDEX
+
+    if not BG_FILES:
         return np.ones((size, size, 3), dtype=np.uint8) * 255
 
-    bg = cv2.imread(str(random.choice(bgs)))
+    bg_path = BG_FILES[BG_INDEX % len(BG_FILES)]
+    BG_INDEX += 1
+
+    bg = cv2.imread(str(bg_path))
+
     if bg is None:
         return np.ones((size, size, 3), dtype=np.uint8) * 255
 
@@ -397,22 +416,17 @@ def load_random_background(size):
     x0 = random.randint(0, bg.shape[1] - size)
     bg = bg[y0:y0 + size, x0:x0 + size]
 
-    # ===== 🔥 AUGMENT BACKGROUND =====
-
-    # 1. Blur nhẹ (giúp foreground nổi hơn)
     if random.random() < 0.5:
-        k = random.choice([3, 5, 7])
+        k = random.choice([3, 5])
         bg = cv2.GaussianBlur(bg, (k, k), 0)
 
-    # 2. Brightness / contrast
     if random.random() < 0.7:
-        alpha = random.uniform(0.7, 1.3)  # contrast
-        beta = random.randint(-30, 30)    # brightness
+        alpha = random.uniform(0.75, 1.25)
+        beta = random.randint(-25, 25)
         bg = cv2.convertScaleAbs(bg, alpha=alpha, beta=beta)
 
-    # 3. Noise nhẹ (optional nhưng ngon)
-    if random.random() < 0.3:
-        noise = np.random.normal(0, 10, bg.shape).astype(np.int16)
+    if random.random() < 0.25:
+        noise = np.random.normal(0, 8, bg.shape).astype(np.int16)
         bg = np.clip(bg.astype(np.int16) + noise, 0, 255).astype(np.uint8)
 
     return bg
@@ -503,8 +517,29 @@ def place_object(canvas, fg, boxes, cluster_center, layout_type="cluster"):
                     (1 - alpha) * canvas[y:y+h, x:x+w, c]
                 )
 
-            boxes.append(rect)
-            return rect
+            alpha = fg[:, :, 3] / 255.0
+
+            for c in range(3):
+                canvas[y:y+h, x:x+w, c] = (
+                    alpha * fg[:, :, c] +
+                    (1 - alpha) * canvas[y:y+h, x:x+w, c]
+                )
+
+            alpha_2d = fg[:, :, 3]
+            ys, xs = np.where(alpha_2d > 10)
+
+            if len(xs) == 0 or len(ys) == 0:
+                return None
+
+            tight_rect = (
+                x + int(xs.min()),
+                y + int(ys.min()),
+                x + int(xs.max()),
+                y + int(ys.max())
+            )
+
+            boxes.append(tight_rect)
+            return tight_rect
 
     return None
 
